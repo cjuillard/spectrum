@@ -39,7 +39,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 
-public class Spectrum extends InputAdapter implements ApplicationListener {
+public class SpectrumOld extends InputAdapter implements ApplicationListener {
 	
 	static final int RAYS_PER_BALL = 128;
 	static final int BALLSNUM = 5;

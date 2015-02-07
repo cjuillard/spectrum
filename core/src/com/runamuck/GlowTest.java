@@ -1,10 +1,8 @@
 package com.runamuck;
 
 import shaders.Gaussian;
-import shaders.WithoutShadowShader;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -12,7 +10,6 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.net.SocketHints;
 
 public class GlowTest {
 	FrameBuffer frameBuffer;
@@ -34,10 +31,6 @@ public class GlowTest {
 				fboHeight, false);
 
 		lightMapMesh = createLightMapMesh();
-		
-		SocketHints hints = new SocketHints();
-//		hints.
-//		Gdx.net.newClientSocket(Protocol.TCP, "host", 1010, );
 
 		blurShader = Gaussian.createBlurShader(fboWidth, fboHeight);
 		basicShader = createBasicShader();

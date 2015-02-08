@@ -1,7 +1,10 @@
 package com.runamuck.screens;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 
 public class MainMenuScreen extends BaseScreen {
@@ -12,7 +15,23 @@ public class MainMenuScreen extends BaseScreen {
 		rootTable.setFillParent(true);
 		uiRoot.addActor(rootTable);
 		
-		rootTable.add(new TextButton("hello world", skin)).expand();
+		TextButton startGameButton = new TextButton("Start Game", skin);
+		rootTable.add(startGameButton).expand();
+		startGameButton.addListener(new ChangeListener() {
+			
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				Gdx.app.postRunnable(new Runnable() {
+
+					@Override
+					public void run() {
+						screenManager.setScreen(new GameplayScreen());
+					}
+					
+				});
+				
+			}
+		});
 	}
 
 	@Override

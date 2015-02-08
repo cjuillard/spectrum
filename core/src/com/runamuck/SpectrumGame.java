@@ -3,8 +3,12 @@ package com.runamuck;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.runamuck.screens.MainMenuScreen;
 
 public class SpectrumGame implements ApplicationListener {
@@ -12,11 +16,15 @@ public class SpectrumGame implements ApplicationListener {
 	private Skin skin;
 	private Stage stage;
 	private ScreenManager screenManager;
+	private SpriteBatch batch;
 	
 	@Override
 	public void create() {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		stage = new Stage();
+		
+		batch = new SpriteBatch();
+		stage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()),
+								batch);
 		
 		screenManager = new ScreenManager();
 		screenManager.setScreen(new MainMenuScreen());
@@ -59,5 +67,9 @@ public class SpectrumGame implements ApplicationListener {
 	
 	public Skin getSkin() {
 		return skin;
+	}
+	
+	public SpriteBatch getBatch() {
+		return batch;
 	}
 }

@@ -1,6 +1,7 @@
 package com.runamuck;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.runamuck.screens.BaseScreen;
@@ -49,7 +50,12 @@ public class ScreenManager {
 			this.screen.getUiRoot().remove();
 		}
 		this.screen = screen;
-		Gdx.input.setInputProcessor(stage);	// todo: also add the screen's custom input processors
+		
+		// Setup the input
+		InputMultiplexer processors = new InputMultiplexer(screen.getInputProcessors());
+		processors.addProcessor(0, stage);
+		Gdx.input.setInputProcessor(processors);
+		
 		if (this.screen != null) {
 			this.screen.show();
 			stage.addActor(this.screen.getUiRoot());

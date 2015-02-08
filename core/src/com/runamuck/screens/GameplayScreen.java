@@ -8,13 +8,22 @@ import box2dLight.RayHandler;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.ChainShape;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
+import com.runamuck.rendering.RenderManager;
+import com.runamuck.rendering.SpriteRenderable;
+import com.runamuck.simulation.Entity;
 
 public class GameplayScreen extends BaseScreen {
 	private static final float WORLD_WIDTH = 48;
@@ -23,7 +32,7 @@ public class GameplayScreen extends BaseScreen {
 	// TODO remove these once we have the main character light weapon
 	private static final int RANDOM_LIGHTS = 4;	
 	static final int RAYS_PER_BALL = 128;
-	static final float LIGHT_DISTANCE = 3f;
+	static final float LIGHT_DISTANCE = 10f;
 	static final float RADIUS = 1f;
 	
 	// Physics simulation parameters
@@ -45,23 +54,35 @@ public class GameplayScreen extends BaseScreen {
 	
 	private ArrayList<Light> lights = new ArrayList<Light>(RANDOM_LIGHTS);
 	
+	private Entity playerEntity;
+	private Array<Entity> entities = new Array<Entity>();
+	
+	private RenderManager renderManager;
+	
 	@Override
 	public void show() {
 		camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
 		camera.update();
 		
-		createPhysicsWorld();
-		
-		/** BOX2D LIGHT STUFF BEGIN */
 		RayHandler.setGammaCorrection(true);
 		RayHandler.useDiffuseLight(true);
 		
 		rayHandler = new RayHandler(world);
 		rayHandler.setAmbientLight(0f, 0f, 0f, 0.5f);
 		rayHandler.setBlurNum(3);
+		
+		createWorld();
 
 		initPointLights();
-		/** BOX2D LIGHT STUFF END */
+		
+		renderManager = new RenderManager(renderContext);
+		
+		TextureRegion textureRegion = new TextureRegion(new Texture(
+				Gdx.files.internal("data/marble.png")));
+		for(Entity entity : entities) {
+			SpriteRenderable renderable = new SpriteRenderable(entity, new Sprite(textureRegion), null);
+			renderManager.addRenderable(renderable);
+		}
 	}
 	
 	void clearLights() {
@@ -91,9 +112,35 @@ public class GameplayScreen extends BaseScreen {
 			lights.add(light);
 		}
 	}
-	
-	private void createPhysicsWorld() {
 
+	
+	private Body createPlayerBody() {
+		CircleShape ballShape = new CircleShape();
+		ballShape.setRadius(RADIUS);
+
+		FixtureDef def = new FixtureDef();
+		def.restitution = 0.9f;
+		def.friction = .1f;
+		def.shape = ballShape;
+		def.density = 1f;
+		BodyDef circleBodyDef = new BodyDef();
+		circleBodyDef.type = BodyType.DynamicBody;
+		circleBodyDef.linearDamping = .9f;
+		circleBodyDef.angularDamping = .25f;
+
+		// Create the BodyDef, set a random position above the
+		// ground and create a new body
+		circleBodyDef.position.x = 0;
+		circleBodyDef.position.y = WORLD_HEIGHT / 4f;
+		Body playerBody = world.createBody(circleBodyDef);
+		playerBody.createFixture(def);
+
+		ballShape.dispose();
+		
+		return playerBody;
+	}
+	
+	private void createWorld() {
 		world = new World(new Vector2(0, 0), true);
 		
 		float halfWidth = WORLD_WIDTH / 2f;
@@ -108,34 +155,52 @@ public class GameplayScreen extends BaseScreen {
 		groundBody = world.createBody(chainBodyDef);
 		groundBody.createFixture(chainShape, 0);
 		chainShape.dispose();
-//		createBoxes();
-//		createBoxes2();
+		
+		// Create player
+		playerEntity = new Entity(createPlayerBody());
+		PointLight light = new PointLight(
+				rayHandler, RAYS_PER_BALL, null, LIGHT_DISTANCE, 0f, 0f);
+		light.attachToBody(playerEntity.getBody(), RADIUS / 2f, RADIUS / 2f);
+		light.setColor(
+				1f,
+				0,
+				0,
+				1f);
+		playerEntity.setWeapon(light);
+		
+		entities.add(playerEntity);
 	}
 	
-	private boolean fixedStep(float delta) {
+	private int fixedStep(float delta) {
 		physicsTimeLeft += delta;
 		if (physicsTimeLeft > MAX_TIME_PER_FRAME)
 			physicsTimeLeft = MAX_TIME_PER_FRAME;
 
-		boolean stepped = false;
+		int stepCount = 0;
 		while (physicsTimeLeft >= TIME_STEP) {
 			world.step(TIME_STEP, VELOCITY_ITERS, POSITION_ITERS);
 			physicsTimeLeft -= TIME_STEP;
-			stepped = true;
+			stepCount++;
 		}
-		return stepped;
+		return stepCount;
 	}
 	
 	@Override
 	public void render(float delta) {
 		super.render(delta);
 		
-		boolean stepped = fixedStep(Gdx.graphics.getDeltaTime());
+		int stepCount = fixedStep(delta);
+		
+		for(Entity entity : entities) {
+			entity.update(delta);
+		}
+		
+		renderManager.renderBeforeFog();
 		
 		/** BOX2D LIGHT STUFF BEGIN */
 		rayHandler.setCombinedMatrix(camera);
 
-		if (stepped) rayHandler.update();
+		if (stepCount > 0) rayHandler.update();
 		rayHandler.render();
 		/** BOX2D LIGHT STUFF END */
 	}

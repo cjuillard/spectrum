@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
+import com.runamuck.rendering.RenderContext;
 import com.runamuck.screens.MainMenuScreen;
 
 public class SpectrumGame implements ApplicationListener {
@@ -17,6 +18,7 @@ public class SpectrumGame implements ApplicationListener {
 	private Stage stage;
 	private ScreenManager screenManager;
 	private SpriteBatch batch;
+	private RenderContext renderContext;
 	
 	@Override
 	public void create() {
@@ -25,6 +27,7 @@ public class SpectrumGame implements ApplicationListener {
 		batch = new SpriteBatch();
 		stage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()),
 								batch);
+		renderContext = new RenderContext(batch);
 		
 		screenManager = new ScreenManager();
 		screenManager.setScreen(new MainMenuScreen());
@@ -71,5 +74,9 @@ public class SpectrumGame implements ApplicationListener {
 	
 	public SpriteBatch getBatch() {
 		return batch;
+	}
+	
+	public RenderContext getRenderContext() {
+		return renderContext;
 	}
 }

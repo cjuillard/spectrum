@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.runamuck.ScreenManager;
 import com.runamuck.SpectrumGame;
+import com.runamuck.rendering.RenderContext;
 
 
 
@@ -17,12 +18,14 @@ public class BaseScreen {
 	protected Stack uiRoot;
 	protected Skin skin;
 	protected Batch batch;
+	protected RenderContext renderContext;
 	
 	public BaseScreen() {
 		SpectrumGame game = (SpectrumGame)Gdx.app.getApplicationListener();
 		this.skin = game.getSkin();
 		this.screenManager = game.getScreenManager();
 		this.batch = game.getBatch();
+		this.renderContext = game.getRenderContext();
 		
 		uiRoot = new Stack();
 		uiRoot.setFillParent(true);

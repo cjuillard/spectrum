@@ -45,12 +45,6 @@ public class GameplayScreen extends BaseScreen {
 		
 		renderManager = new RenderManager(renderContext);
 		renderManager.loadWorld(spectrumWorld);
-		
-		// TODO create renderables based off of the SpectrumWorld
-//		for(Entity entity : entities) {
-//			SpriteRenderable renderable = new SpriteRenderable(entity, new Sprite(textureRegion), null);
-//			renderManager.addRenderable(renderable);
-//		}
 	}
 	
 	void clearLights() {
@@ -100,5 +94,7 @@ public class GameplayScreen extends BaseScreen {
 		if (stepCount > 0) rayHandler.update();
 		rayHandler.render();
 		/** BOX2D LIGHT STUFF END */
+		
+		renderManager.renderAfterFog();
 	}
 }

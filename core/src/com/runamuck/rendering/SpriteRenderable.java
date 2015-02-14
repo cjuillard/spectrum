@@ -10,12 +10,12 @@ public class SpriteRenderable implements IRenderable {
 
 	protected Sprite belowFog;
 	private Entity entity;
-	private Sprite afterFog;
+	private Sprite aboveFog;
 	
-	public SpriteRenderable(Entity entity, Sprite belowFog, @Nullable Sprite afterFog) {
+	public SpriteRenderable(Entity entity, Sprite belowFog, @Nullable Sprite aboveFog) {
 		this.entity = entity;
 		this.belowFog = belowFog;
-		this.afterFog = afterFog;
+		this.aboveFog = aboveFog;
 	}
 	
 	@Override
@@ -26,9 +26,9 @@ public class SpriteRenderable implements IRenderable {
 		belowFog.setCenter(body.getPosition().x, body.getPosition().y);
 		belowFog.setRotation(angle);
 		
-		if(afterFog != null) {
-			afterFog.setPosition(body.getPosition().x, body.getPosition().y);
-			afterFog.setRotation(angle);
+		if(aboveFog != null) {
+			aboveFog.setCenter(body.getPosition().x, body.getPosition().y);
+			aboveFog.setRotation(angle);
 		}
 	}
 
@@ -38,9 +38,9 @@ public class SpriteRenderable implements IRenderable {
 	}
 	
 	@Override
-	public void renderAfterFog(RenderContext renderContext) {
-		if(afterFog != null) {
-			afterFog.draw(renderContext.getBatch());
+	public void renderAboveFog(RenderContext renderContext) {
+		if(aboveFog != null) {
+			aboveFog.draw(renderContext.getBatch());
 		}
 	}
 

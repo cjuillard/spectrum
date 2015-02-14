@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.runamuck.data.EntityDefinition;
+import com.runamuck.data.EntityDefinitions;
 import com.runamuck.simulation.Entity;
 import com.runamuck.simulation.ISpectrumWorldListener;
 import com.runamuck.simulation.SpectrumWorld;
@@ -16,12 +16,17 @@ public class RenderManager implements ISpectrumWorldListener{
 	private RenderContext renderContext;
 	private Array<IRenderable> renderables = new Array<IRenderable>();
 	private TextureRegion marbleRegion;
+	private TextureRegion en1UFRegion;
+	private TextureRegion en1AFRegion;
 	
 	public RenderManager(RenderContext renderContext) {
 		this.renderContext = renderContext;
 		
 		marbleRegion = new TextureRegion(new Texture(
 				Gdx.files.internal("data/marble.png")));
+		
+		en1UFRegion = new TextureRegion(new Texture(Gdx.files.internal("data/enemy1_bf.png")));
+		en1AFRegion = new TextureRegion(new Texture(Gdx.files.internal("data/enemy1_af.png")));
 	}
 	
 	public void update(float timeElapsed) {
@@ -42,7 +47,7 @@ public class RenderManager implements ISpectrumWorldListener{
 	public void renderAfterFog() {
 		renderContext.getBatch().begin();
 		for(IRenderable renderable : renderables) {
-			renderable.renderAfterFog(renderContext);
+			renderable.renderAboveFog(renderContext);
 		}
 		renderContext.getBatch().end();
 		
@@ -63,13 +68,23 @@ public class RenderManager implements ISpectrumWorldListener{
 		case PLAYER:
 		{
 			Sprite sprite = new Sprite(marbleRegion);
-			sprite.setSize(EntityDefinition.getWidth(entity.getType()), EntityDefinition.getHeight(entity.getType()));
+			EntityDefinition def = EntityDefinitions.get(entity.getType());
+			sprite.setSize(def.getWidth(), def.getHeight());
 			sprite.setOriginCenter();
 			SpriteRenderable renderable = new SpriteRenderable(entity, sprite, null);
 			renderables.add(renderable);
 		}
 			break;
 		case ENEMY1:
+			EntityDefinition def = EntityDefinitions.get(entity.getType());
+			Sprite underFogSprite = new Sprite(en1UFRegion);
+			underFogSprite.setSize(def.getWidth(), def.getHeight());
+			underFogSprite.setOriginCenter();
+			Sprite aboveFogSprite = new Sprite(en1AFRegion);
+			aboveFogSprite.setSize(def.getWidth(), def.getHeight());
+			aboveFogSprite.setOriginCenter();
+			SpriteRenderable renderable = new SpriteRenderable(entity, underFogSprite, aboveFogSprite);
+			renderables.add(renderable);
 			break;
 		}
 	}

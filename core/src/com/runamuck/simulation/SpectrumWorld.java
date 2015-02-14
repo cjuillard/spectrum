@@ -19,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.runamuck.data.EntityDefinition;
+import com.runamuck.data.EntityDefinitions;
 
 public class SpectrumWorld {
 	static final int RAYS_PER_BALL = 128;
@@ -51,32 +52,6 @@ public class SpectrumWorld {
 		this.height = 32;
 	}
 	
-	private Body createPlayerBody() {
-		CircleShape ballShape = new CircleShape();
-		ballShape.setRadius(EntityDefinition.getWidth(EntityType.PLAYER) / 2f);
-
-		FixtureDef def = new FixtureDef();
-		def.restitution = 0.9f;
-		def.friction = .1f;
-		def.shape = ballShape;
-		def.density = 1f;
-		BodyDef circleBodyDef = new BodyDef();
-		circleBodyDef.type = BodyType.DynamicBody;
-		circleBodyDef.linearDamping = .9f;
-		circleBodyDef.angularDamping = .25f;
-
-		// Create the BodyDef, set a random position above the
-		// ground and create a new body
-		circleBodyDef.position.x = 0;
-		circleBodyDef.position.y = height / 4f;
-		Body playerBody = box2DWorld.createBody(circleBodyDef);
-		playerBody.createFixture(def);
-
-		ballShape.dispose();
-		
-		return playerBody;
-	}
-	
 	private void createWorld() {
 		box2DWorld = new World(new Vector2(0, 0), true);
 		
@@ -97,8 +72,10 @@ public class SpectrumWorld {
 	
 	private void createPlayer(RayHandler rayHandler) {
 		// Create player
-		playerEntity = new Entity(createPlayerBody(), EntityType.PLAYER);
-		float startPos = EntityDefinition.getHeight(EntityType.PLAYER) / 2f;
+		EntityDefinition def = EntityDefinitions.get(EntityType.PLAYER);
+		playerEntity = new Entity(def.createBody(box2DWorld), EntityType.PLAYER);
+		
+		float startPos = def.getHeight() / 2f;
 		ChainLight light = new ChainLight(
 				rayHandler, RAYS_PER_BALL, null, LIGHT_DISTANCE*3, 1,
 				new float[]{-1, -startPos, 0, -startPos, 1, -startPos});
@@ -117,7 +94,7 @@ public class SpectrumWorld {
 	}
 	
 	public void addEntity(Entity entity) {
-		entities.add(playerEntity);
+		entities.add(entity);
 		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).entityAdded(entity);
@@ -138,6 +115,21 @@ public class SpectrumWorld {
 	public void create(RayHandler rayHandler) {
 		createWorld();
 		createPlayer(rayHandler);
+		
+		for(int i = 0; i < 5; i++) {
+			createEntity(EntityType.ENEMY1, 
+						MathUtils.random(-width/2f, width/2f), 
+						MathUtils.random(-height/2f, height/2f));
+		}
+	}
+	
+	// Test code
+	private void createEntity(EntityType type, float x, float y) {
+		// Create player
+		EntityDefinition def = EntityDefinitions.get(type);
+		Entity entity = new Entity(def.createBody(box2DWorld), type);
+		entity.getBody().setTransform(x, y, 0);
+		addEntity(entity);
 	}
 	
 	public int update(Camera cam, float delta) {

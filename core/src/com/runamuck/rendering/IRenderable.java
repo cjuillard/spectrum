@@ -5,5 +5,5 @@ public interface IRenderable {
 	
 	void render(RenderContext renderContext);
 	
-	void renderAfterFog(RenderContext renderContext);
+	void renderAboveFog(RenderContext renderContext);
 }

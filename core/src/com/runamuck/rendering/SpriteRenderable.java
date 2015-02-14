@@ -1,6 +1,7 @@
 package com.runamuck.rendering;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.runamuck.simulation.Entity;
 import com.sun.istack.internal.Nullable;
@@ -19,13 +20,15 @@ public class SpriteRenderable implements IRenderable {
 	
 	@Override
 	public void update(float elapsed) {
+		
 		Body body = entity.getBody();
-		belowFog.setPosition(body.getPosition().x, body.getPosition().y);
-		belowFog.setRotation(body.getAngle());
+		float angle = MathUtils.radiansToDegrees * body.getAngle();
+		belowFog.setCenter(body.getPosition().x, body.getPosition().y);
+		belowFog.setRotation(angle);
 		
 		if(afterFog != null) {
 			afterFog.setPosition(body.getPosition().x, body.getPosition().y);
-			afterFog.setRotation(body.getAngle());
+			afterFog.setRotation(angle);
 		}
 	}
 

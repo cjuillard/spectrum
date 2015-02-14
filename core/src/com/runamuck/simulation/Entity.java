@@ -8,10 +8,12 @@ public class Entity {
 	
 	protected Body body;
 	protected float hp;
-	private Light weapon;
+	protected Light weapon;
+	protected EntityType type;
 	
-	public Entity(Body body) {
+	public Entity(Body body, EntityType type) {
 		this.body = body;
+		this.type = type;
 	}
 	
 	public Body getBody() {
@@ -42,6 +44,7 @@ public class Entity {
 		this.weapon = light;
 	}
 	
-	
-
+	public EntityType getType() {
+		return type;
+	}
 }

@@ -1,23 +1,31 @@
 package com.runamuck.simulation;
 
-import box2dLight.Light;
-
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.utils.Array;
+import com.runamuck.data.EntityDefinitions;
 
 public class Entity {
 	
 	protected Body body;
 	protected float hp;
-	protected Light weapon;
+	protected Weapon weapon;
 	protected EntityType type;
+	protected SpectrumWorld world;
 	
-	public Entity(Body body, EntityType type) {
+	public Entity(SpectrumWorld world, Body body, EntityType type) {
+		this.world = world;
 		this.body = body;
 		this.type = type;
+		this.hp = getMaxHP();
 	}
 	
 	public Body getBody() {
 		return body;
+	}
+	
+	public float getMaxHP() {
+		return EntityDefinitions.get(type).getMaxHP();
 	}
 	
 	public float getHp() {
@@ -25,21 +33,40 @@ public class Entity {
 	}
 	
 	public void setHp(float hp) {
-		this.hp = hp;
-	}
-
-	public void update(float delta) {
+		float oldHP = this.hp;
+		this.hp = Math.max(0, hp);
+		if(oldHP > 0 && this.hp <= 0) {
+			// TODO die
+			System.out.println("Enemy died");
+		}
 		
 	}
 
-	public Light getWeapon() {
+	public void update(float delta) {
+		if(weapon != null) {
+			Array<Entity> entities = world.getEntities();
+			for(int i = 0; i < entities.size; i++) {
+				Entity otherEntity = entities.get(i);
+				
+				if(EntityDefinitions.isDamagedByLight(otherEntity.getType())) {
+					Vector2 pos = otherEntity.getBody().getPosition();
+					if(weapon.getLight().contains(pos.x, pos.y)) {
+						otherEntity.setHp(otherEntity.getHp() - delta * weapon.getDamage());
+					}
+				}
+			}
+//			weapon.getLight()
+		}
+	}
+
+	public Weapon getWeapon() {
 		return weapon;
 	}
 
-	public void setWeapon(Light light) {
+	public void setWeapon(Weapon light) {
 		if(this.weapon != null) {
-			this.weapon.remove();
-			this.weapon.dispose();
+			this.weapon.getLight().remove();
+			this.weapon.getLight().dispose();
 		}
 		this.weapon = light;
 	}

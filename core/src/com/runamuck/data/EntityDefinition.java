@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.World;
 public abstract class EntityDefinition {
 	protected float height;
 	protected float width;
+	protected float maxHP = 100;
 	
 	public EntityDefinition() {
 		
@@ -31,4 +32,13 @@ public abstract class EntityDefinition {
 	}
 	
 	public abstract Body createBody(World world);
+
+	public float getMaxHP() {
+		return maxHP;
+	}
+	
+	public EntityDefinition setMaxHP(float maxHP) {
+		this.maxHP = maxHP;
+		return this;
+	}
 }

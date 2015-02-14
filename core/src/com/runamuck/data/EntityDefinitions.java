@@ -88,4 +88,13 @@ public abstract class EntityDefinitions {
 	public static EntityDefinition get(EntityType type) {
 		return definitions.get(type);
 	}
+
+	public static boolean isDamagedByLight(EntityType type) {
+		switch(type) {
+		case PLAYER:
+			return false;
+		default:
+			return true;
+		}
+	}
 }

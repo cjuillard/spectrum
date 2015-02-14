@@ -46,6 +46,7 @@ public class SpectrumWorld {
 	
 	private float width;
 	private float height;
+	private RayHandler rayHandler;
 	
 	public SpectrumWorld() {
 		this.width = 48;
@@ -73,7 +74,7 @@ public class SpectrumWorld {
 	private void createPlayer(RayHandler rayHandler) {
 		// Create player
 		EntityDefinition def = EntityDefinitions.get(EntityType.PLAYER);
-		playerEntity = new Entity(def.createBody(box2DWorld), EntityType.PLAYER);
+		playerEntity = new Entity(this, def.createBody(box2DWorld), EntityType.PLAYER);
 		
 		float startPos = def.getHeight() / 2f;
 		ChainLight light = new ChainLight(
@@ -88,7 +89,7 @@ public class SpectrumWorld {
 				0,
 				0,
 				1f);
-		playerEntity.setWeapon(light);
+		playerEntity.setWeapon(new Weapon(light, 100));
 		
 		addEntity(playerEntity);
 	}
@@ -113,6 +114,7 @@ public class SpectrumWorld {
 	}
 
 	public void create(RayHandler rayHandler) {
+		this.rayHandler = rayHandler;
 		createWorld();
 		createPlayer(rayHandler);
 		
@@ -127,7 +129,7 @@ public class SpectrumWorld {
 	private void createEntity(EntityType type, float x, float y) {
 		// Create player
 		EntityDefinition def = EntityDefinitions.get(type);
-		Entity entity = new Entity(def.createBody(box2DWorld), type);
+		Entity entity = new Entity(this, def.createBody(box2DWorld), type);
 		entity.getBody().setTransform(x, y, 0);
 		addEntity(entity);
 	}
@@ -205,6 +207,10 @@ public class SpectrumWorld {
 
 	public Array<Entity> getEntities() {
 		return entities;
+	}
+
+	public RayHandler getRayHandler() {
+		return rayHandler;
 	}
 	
 	// Environment?

@@ -1,9 +1,13 @@
 package com.runamuck.simulation;
 
+import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pools;
+import com.runamuck.ai.RandomMoveAIState;
 import com.runamuck.data.EntityDefinitions;
+import com.runamuck.simulation.actions.EntityAction;
 
 public class Entity {
 	
@@ -13,12 +17,18 @@ public class Entity {
 	protected EntityType type;
 	protected SpectrumWorld world;
 	
+	protected Array<EntityAction> actions = new Array<EntityAction>();
+	protected DefaultStateMachine<Entity> stateMachine;
+	private float moveForce = 10;
+	
 	public Entity(SpectrumWorld world, Body body, EntityType type) {
 		this.world = world;
 		this.body = body;
 		body.setUserData(this);
 		this.type = type;
 		this.hp = getMaxHP();
+		
+		stateMachine = new DefaultStateMachine<Entity>(this, RandomMoveAIState.MOVING);
 	}
 	
 	public Body getBody() {
@@ -42,11 +52,26 @@ public class Entity {
 		
 	}
 	
+	public SpectrumWorld getWorld() {
+		return world;
+	}
+	
 	public void onDeath() {
 		
 	}
 
 	public void update(float delta) {
+		stateMachine.update();
+		
+		if(actions.size > 0) {
+			EntityAction currAction = actions.get(0);
+			currAction.update(delta);
+			if(currAction.isComplete()) {
+				Pools.free(currAction);
+				actions.removeIndex(0);
+			}
+		}
+		
 		if(weapon != null) {
 			Array<Entity> entities = world.getEntities();
 			for(int i = entities.size -1 ; i >= 0; i--) {
@@ -90,5 +115,17 @@ public class Entity {
 			weapon.getLight().dispose();
 		}
 		weapon = null;
+	}
+
+	public float getMoveForce() {
+		return moveForce ;
+	}
+	
+	public Array<EntityAction> getActions() {
+		return actions;
+	}
+	
+	public void addAction(EntityAction action) {
+		this.actions.add(action);
 	}
 }

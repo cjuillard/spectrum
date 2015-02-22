@@ -5,6 +5,7 @@ import box2dLight.RayHandler;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.MathUtils;
@@ -20,6 +21,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.runamuck.ai.EnemyFollowAIState;
+import com.runamuck.ai.RandomMoveAIState;
 import com.runamuck.data.EntityDefinition;
 import com.runamuck.data.EntityDefinitions;
 import com.runamuck.simulation.actions.ActionPool;
@@ -191,6 +194,12 @@ public class SpectrumWorld {
 		EntityDefinition def = EntityDefinitions.get(type);
 		Entity entity = new Entity(this, def.createBody(box2DWorld), type);
 		entity.getBody().setTransform(x, y, 0);
+		
+		if(MathUtils.randomBoolean()) {
+			entity.setAI(new DefaultStateMachine<Entity>(entity, EnemyFollowAIState.WAITING));
+		} else {
+			entity.setAI(new DefaultStateMachine<Entity>(entity, RandomMoveAIState.MOVING));
+		}
 		addEntity(entity);
 	}
 	

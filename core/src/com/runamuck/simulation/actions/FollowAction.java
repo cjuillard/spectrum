@@ -3,19 +3,17 @@ package com.runamuck.simulation.actions;
 import com.badlogic.gdx.math.Vector2;
 import com.runamuck.simulation.Entity;
 
-public class MoveAction extends EntityAction {
+public class FollowAction extends EntityAction {
 
-	protected Vector2 dest = new Vector2();
-	protected float fudgeDst2;
+	protected Entity followTarget;
 	
-	public MoveAction() {
+	public FollowAction() {
 		super();
 	}
 	
-	protected void init(Entity source, Vector2 dst, float fudgeDst) {
+	protected void init(Entity source, Entity followTarget) {
 		this.source = source;
-		this.dest.set(dst);
-		this.fudgeDst2 = fudgeDst * fudgeDst;
+		this.followTarget = followTarget;
 	}
 	private Vector2 tmp2 = new Vector2();
 	
@@ -23,11 +21,11 @@ public class MoveAction extends EntityAction {
 	public void update(float elapsed) {
 		super.update(elapsed);
 		
-		tmp2.set(dest).sub(source.getBody().getPosition());
-		if(tmp2.len2() <= fudgeDst2) {
+		if(followTarget.getHp() <= 0) {
 			markComplete();
 			return;
 		}
+		tmp2.set(followTarget.getBody().getPosition()).sub(source.getBody().getPosition());
 		tmp2.nor().scl(source.getMoveForce());
 		source.getBody().applyForceToCenter(tmp2, true);
 	}
@@ -36,7 +34,6 @@ public class MoveAction extends EntityAction {
 	public void reset() {
 		super.reset();
 		
-		dest.setZero();
-		fudgeDst2 = 0;
+		followTarget = null;
 	}
 }

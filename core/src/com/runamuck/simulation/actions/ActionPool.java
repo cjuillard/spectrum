@@ -17,4 +17,10 @@ public class ActionPool {
 		action.source = source;
 		return action;
 	}
+
+	public static FollowAction createFollowAction(Entity source, Entity followTarget) {
+		FollowAction action = Pools.obtain(FollowAction.class);
+		action.init(source, followTarget);
+		return action;
+	}
 }

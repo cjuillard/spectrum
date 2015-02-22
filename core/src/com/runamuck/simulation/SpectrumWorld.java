@@ -279,4 +279,8 @@ public class SpectrumWorld {
 	public void removeListener(ISpectrumWorldListener listener) {
 		this.listeners.removeValue(listener, true);
 	}
+
+	public Entity getPlayerEntity() {
+		return playerEntity;
+	}
 }

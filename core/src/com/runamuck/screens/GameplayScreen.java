@@ -7,7 +7,11 @@ import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.runamuck.rendering.RenderManager;
+import com.runamuck.simulation.Entity;
 import com.runamuck.simulation.SpectrumWorld;
 
 public class GameplayScreen extends BaseScreen {
@@ -15,7 +19,6 @@ public class GameplayScreen extends BaseScreen {
 	private static final int RANDOM_LIGHTS = 4;	
 	static final int RAYS_PER_BALL = 128;
 	static final float LIGHT_DISTANCE = 10f;
-	
 	
 	private OrthographicCamera camera;
 	private RayHandler rayHandler;
@@ -80,12 +83,20 @@ public class GameplayScreen extends BaseScreen {
 	public void render(float delta) {
 		super.render(delta);
 		
-		camera.update();
-		
-		batch.setProjectionMatrix(camera.combined);
-		
 		int stepCount = spectrumWorld.update(camera, delta);
 		renderManager.update(delta);
+		
+		Entity playerEntity = spectrumWorld.getPlayerEntity();
+		if(playerEntity != null) {
+			Vector2 pos = playerEntity.getBody().getPosition();
+			camera.position.x = pos.x;
+			camera.position.y = pos.y;
+		}
+		camera.update();
+		
+		ShapeRenderer sr = renderContext.getShapeRenderer();
+		sr.setProjectionMatrix(camera.combined);
+		batch.setProjectionMatrix(camera.combined);
 		
 		renderManager.renderBeforeFog();
 		
@@ -97,5 +108,11 @@ public class GameplayScreen extends BaseScreen {
 		/** BOX2D LIGHT STUFF END */
 		
 		renderManager.renderAfterFog();
+		
+		// Draw the out of bounds
+		sr.begin(ShapeType.Line);
+		sr.rect(-spectrumWorld.getWidth() / 2f, -spectrumWorld.getHeight() / 2f, 
+							spectrumWorld.getWidth(), spectrumWorld.getHeight());
+		sr.end();
 	}
 }

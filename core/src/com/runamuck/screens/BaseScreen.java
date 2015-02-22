@@ -11,7 +11,6 @@ import com.runamuck.SpectrumGame;
 import com.runamuck.rendering.RenderContext;
 
 
-
 public class BaseScreen {
 	
 	protected ScreenManager screenManager;
@@ -67,6 +66,13 @@ public class BaseScreen {
 
 	public void dispose() {
 
+	}
+	
+	public boolean backButtonPressed() {
+		if(screenManager.popScreen()) {
+			return true;
+		}
+		return false;
 	}
 
 }

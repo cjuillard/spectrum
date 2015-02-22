@@ -25,7 +25,7 @@ public class MainMenuScreen extends BaseScreen {
 
 					@Override
 					public void run() {
-						screenManager.setScreen(new GameplayScreen());
+						screenManager.pushScreen(new GameplayScreen());
 					}
 					
 				});

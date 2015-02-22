@@ -1,15 +1,20 @@
 package com.runamuck;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 import com.runamuck.screens.BaseScreen;
 
 public class ScreenManager {
 	protected BaseScreen screen;
 	private Skin skin;
 	private Stage stage;
+	
+	private Array<BaseScreen> screens = new Array<BaseScreen>();
 	
 	public ScreenManager() {
 		SpectrumGame game = (SpectrumGame)Gdx.app.getApplicationListener();
@@ -44,12 +49,52 @@ public class ScreenManager {
 	/** Sets the current screen. {@link BaseScreen#hide()} is called on any old screen, and {@link BaseScreen#show()} is called on the new
 	 * screen, if any.
 	 * @param screen may be {@code null} */
-	public void setScreen (BaseScreen screen) {
+	public void pushScreen (BaseScreen screen) {
 		if (this.screen != null) {
 			this.screen.hide();
 			this.screen.getUiRoot().remove();
 		}
 		this.screen = screen;
+		
+		// Setup the input
+		InputMultiplexer processors = new InputMultiplexer(screen.getInputProcessors());
+		processors.addProcessor(0, stage);
+		processors.addProcessor(1, getBackButtonListener());
+		Gdx.input.setInputProcessor(processors);
+		
+		if (this.screen != null) {
+			this.screen.show();
+			stage.addActor(this.screen.getUiRoot());
+			this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		}
+		
+		screens.add(screen);
+	}
+	
+	protected InputAdapter getBackButtonListener() {
+		return new InputAdapter() {
+			@Override
+			public boolean keyUp(int keycode) {
+				if(keycode == Keys.BACKSPACE) {
+					if(screen.backButtonPressed()) {
+						return true;
+					}
+				}
+				
+				return false;
+			}
+		};
+	}
+	
+	public boolean popScreen() {
+		if(screens.size == 1) return false;
+		
+		if (this.screen != null) {
+			this.screen.hide();
+			this.screen.getUiRoot().remove();
+		}
+		screens.pop();
+		this.screen = screens.get(screens.size - 1);
 		
 		// Setup the input
 		InputMultiplexer processors = new InputMultiplexer(screen.getInputProcessors());
@@ -61,6 +106,8 @@ public class ScreenManager {
 			stage.addActor(this.screen.getUiRoot());
 			this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		}
+		
+		return true;
 	}
 
 	/** @return the currently active {@link BaseScreen}. */

@@ -11,6 +11,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -62,12 +66,64 @@ public class SpectrumWorld {
 				new Vector2(halfWidth, halfHeight),
 				new Vector2(-halfWidth, halfHeight) });
 		BodyDef chainBodyDef = new BodyDef();
+		box2DWorld.setContactListener(getContactListener());
 		chainBodyDef.type = BodyType.StaticBody;
 		groundBody = box2DWorld.createBody(chainBodyDef);
 		groundBody.createFixture(chainShape, 0);
 		chainShape.dispose();
 	}
 	
+	private ContactListener getContactListener() {
+		return new ContactListener() {
+			
+			@Override
+			public void preSolve(Contact contact, Manifold oldManifold) {
+			}
+			
+			@Override
+			public void postSolve(Contact contact, ContactImpulse impulse) {
+			}
+			
+			@Override
+			public void endContact(Contact contact) {
+			}
+			
+			@Override
+			public void beginContact(Contact contact) {
+				Body a = contact.getFixtureA().getBody();
+				Body b = contact.getFixtureA().getBody();
+				
+				Object aData = a.getUserData();
+				Object bData = b.getUserData();
+				
+				if(aData instanceof Entity && bData instanceof Entity) {
+					final Entity aEntity = (Entity)aData;
+					final Entity bEntity = (Entity)bData;
+					
+					if(aEntity.getType() == EntityType.PLAYER) {
+						Gdx.app.postRunnable(new Runnable() {
+
+							@Override
+							public void run() {
+								aEntity.setHp(0);
+							}
+							
+						});
+					} else if(bEntity.getType() == EntityType.PLAYER) {
+						Gdx.app.postRunnable(new Runnable() {
+
+							@Override
+							public void run() {
+								bEntity.setHp(0);
+							}
+							
+						});
+					}
+				}
+			}
+		};
+	}
+
 	private void createPlayer(RayHandler rayHandler) {
 		// Create player
 		EntityDefinition def = EntityDefinitions.get(EntityType.PLAYER);
@@ -103,7 +159,11 @@ public class SpectrumWorld {
 		boolean removed = entities.removeValue(entity, true);
 		
 		if(removed) {
-			box2DWorld.destroyBody(entity.getBody());
+			if(entity == playerEntity) {
+				playerEntity = null;
+			}
+			
+			entity.dispose();
 			for(int i = 0; i < listeners.size; i++) {
 				listeners.get(i).entityRemoved(entity);
 			}
@@ -139,6 +199,8 @@ public class SpectrumWorld {
 	private Vector2 dir = new Vector2();
 	private Vector3 tmpMousePos = new Vector3();
 	private void handlePlayerMovement(Camera cam, float deltaTime) {
+		if(playerEntity == null) return;
+		
 		dir.setZero();
 		if(Gdx.input.isKeyPressed(Keys.W)) {
 			dir.y++;

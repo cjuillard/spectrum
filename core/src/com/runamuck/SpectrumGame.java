@@ -30,7 +30,7 @@ public class SpectrumGame implements ApplicationListener {
 		renderContext = new RenderContext(batch);
 		
 		screenManager = new ScreenManager();
-		screenManager.setScreen(new MainMenuScreen());
+		screenManager.pushScreen(new MainMenuScreen());
 	}
 	
 	public void dispose () {

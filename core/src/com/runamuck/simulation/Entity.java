@@ -16,6 +16,7 @@ public class Entity {
 	public Entity(SpectrumWorld world, Body body, EntityType type) {
 		this.world = world;
 		this.body = body;
+		body.setUserData(this);
 		this.type = type;
 		this.hp = getMaxHP();
 	}
@@ -76,5 +77,18 @@ public class Entity {
 	
 	public EntityType getType() {
 		return type;
+	}
+
+	public void dispose() {
+		if(body != null) {
+			body.getWorld().destroyBody(body);
+		}
+		body = null;
+		
+		if(weapon != null) {
+			weapon.getLight().remove();
+			weapon.getLight().dispose();
+		}
+		weapon = null;
 	}
 }

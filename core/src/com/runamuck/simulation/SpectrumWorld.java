@@ -1,7 +1,6 @@
 package com.runamuck.simulation;
 
 import box2dLight.ChainLight;
-import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 import com.badlogic.gdx.Gdx;
@@ -12,11 +11,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.ChainShape;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.runamuck.data.EntityDefinition;
 import com.runamuck.data.EntityDefinitions;
@@ -103,7 +100,7 @@ public class SpectrumWorld {
 	}
 	
 	public void removeEntity(Entity entity) {
-		boolean removed = entities.removeValue(playerEntity, true);
+		boolean removed = entities.removeValue(entity, true);
 		
 		if(removed) {
 			box2DWorld.destroyBody(entity.getBody());
@@ -213,13 +210,11 @@ public class SpectrumWorld {
 		return rayHandler;
 	}
 	
-	// Environment?
-	// Box2D world
-	// Your entity
-	// Enemies
+	public void addListener(ISpectrumWorldListener listener) {
+		this.listeners.add(listener);
+	}
 	
-	// update() logic
-	// add/remove()
-	
-	// renderables - light + sprites/geometric renderings
+	public void removeListener(ISpectrumWorldListener listener) {
+		this.listeners.removeValue(listener, true);
+	}
 }

@@ -71,7 +71,7 @@ public class RenderManager implements ISpectrumWorldListener{
 			EntityDefinition def = EntityDefinitions.get(entity.getType());
 			sprite.setSize(def.getWidth(), def.getHeight());
 			sprite.setOriginCenter();
-			SpriteRenderable renderable = new SpriteRenderable(entity, sprite, null);
+			SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, sprite, null);
 			renderables.add(renderable);
 		}
 			break;
@@ -83,7 +83,7 @@ public class RenderManager implements ISpectrumWorldListener{
 			Sprite aboveFogSprite = new Sprite(en1AFRegion);
 			aboveFogSprite.setSize(def.getWidth(), def.getHeight());
 			aboveFogSprite.setOriginCenter();
-			SpriteRenderable renderable = new SpriteRenderable(entity, underFogSprite, aboveFogSprite);
+			SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, underFogSprite, aboveFogSprite);
 			renderables.add(renderable);
 			break;
 		}
@@ -96,7 +96,13 @@ public class RenderManager implements ISpectrumWorldListener{
 
 	@Override
 	public void entityRemoved(Entity entity) {
-		// TODO add entity removing code
-		
+		for(int i = renderables.size - 1; i >= 0; i--) {
+			IRenderable renderable = renderables.get(i);
+			if(renderable instanceof IEntityRenderable) {
+				if(((IEntityRenderable) renderable).getEntity() == entity) {
+					renderables.removeIndex(i);
+				}
+			}
+		}
 	}
 }

@@ -53,7 +53,7 @@ public abstract class EntityDefinitions {
 			@Override
 			public Body createBody(World world) {
 				CircleShape ballShape = new CircleShape();
-				ballShape.setRadius(EntityDefinitions.get(EntityType.PLAYER).getWidth() / 2f);
+				ballShape.setRadius(EntityDefinitions.get(EntityType.ENEMY1).getWidth() / 2f);
 
 				FixtureDef def = new FixtureDef();
 				def.restitution = 0.9f;
@@ -78,8 +78,8 @@ public abstract class EntityDefinitions {
 			}
 			
 		};
-		enemy1Def.setWidth(2)
-		.setHeight(2);
+		enemy1Def.setWidth(1)
+		.setHeight(1);
 		definitions.put(EntityType.ENEMY1, enemy1Def);
 		
 

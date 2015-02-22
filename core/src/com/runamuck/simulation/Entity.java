@@ -36,16 +36,19 @@ public class Entity {
 		float oldHP = this.hp;
 		this.hp = Math.max(0, hp);
 		if(oldHP > 0 && this.hp <= 0) {
-			// TODO die
-			System.out.println("Enemy died");
+			world.removeEntity(this);
 		}
+		
+	}
+	
+	public void onDeath() {
 		
 	}
 
 	public void update(float delta) {
 		if(weapon != null) {
 			Array<Entity> entities = world.getEntities();
-			for(int i = 0; i < entities.size; i++) {
+			for(int i = entities.size -1 ; i >= 0; i--) {
 				Entity otherEntity = entities.get(i);
 				
 				if(EntityDefinitions.isDamagedByLight(otherEntity.getType())) {

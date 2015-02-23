@@ -28,6 +28,7 @@ import com.runamuck.data.EntityDefinitions;
 import com.runamuck.simulation.actions.ActionPool;
 
 public class SpectrumWorld {
+	private static final int PLAYER_FORCE = 4000;
 	static final int RAYS_PER_BALL = 128;
 	static final float LIGHT_DISTANCE = 20f;
 	static final float RADIUS = 1f;
@@ -182,17 +183,23 @@ public class SpectrumWorld {
 		createPlayer(rayHandler);
 		
 		for(int i = 0; i < 5; i++) {
-			createEntity(EntityType.ENEMY1, 
-						MathUtils.random(-width/2f, width/2f), 
-						MathUtils.random(-height/2f, height/2f));
+			createRandomEnemy();
 		}
 	}
 	
 	// Test code
-	private void createEntity(EntityType type, float x, float y) {
+	public void createRandomEnemy() {
+		EntityType type = EntityType.values()[MathUtils.random(2) + 1];
+		createEntity(type, 
+					MathUtils.random(-width/2f, width/2f), 
+					MathUtils.random(-height/2f, height/2f));
+	}
+	
+	public void createEntity(EntityType type, float x, float y) {
 		// Create player
 		EntityDefinition def = EntityDefinitions.get(type);
 		Entity entity = new Entity(this, def.createBody(box2DWorld), type);
+		entity.setAI(def.getAI(entity));
 		entity.getBody().setTransform(x, y, 0);
 		
 		if(MathUtils.randomBoolean()) {
@@ -229,7 +236,7 @@ public class SpectrumWorld {
 		
 		Body body = playerEntity.getBody();
 		if(dir.x != 0 || dir.y != 0) {
-			dir.nor().scl(2000 * deltaTime);
+			dir.nor().scl(PLAYER_FORCE * deltaTime);
 			
 			playerEntity.getBody().applyForceToCenter(dir, true);
 		}

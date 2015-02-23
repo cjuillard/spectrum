@@ -26,7 +26,7 @@ public class FollowAction extends EntityAction {
 			return;
 		}
 		tmp2.set(followTarget.getBody().getPosition()).sub(source.getBody().getPosition());
-		tmp2.nor().scl(source.getMoveForce());
+		tmp2.nor().scl(source.getMoveForce() * elapsed);
 		source.getBody().applyForceToCenter(tmp2, true);
 	}
 

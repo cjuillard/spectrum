@@ -2,5 +2,7 @@ package com.runamuck.simulation;
 
 public enum EntityType {
 	PLAYER,
-	ENEMY1,
+	RANDOM_MOVE,
+	FOLLOW_SLOW,
+	FOLLOW_FAST,
 }

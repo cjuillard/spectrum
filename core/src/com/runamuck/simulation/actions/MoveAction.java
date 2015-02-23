@@ -28,7 +28,7 @@ public class MoveAction extends EntityAction {
 			markComplete();
 			return;
 		}
-		tmp2.nor().scl(source.getMoveForce());
+		tmp2.nor().scl(source.getMoveForce() * elapsed);
 		source.getBody().applyForceToCenter(tmp2, true);
 	}
 

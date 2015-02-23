@@ -66,16 +66,43 @@ public class RenderManager implements ISpectrumWorldListener{
 	public void loadEntity(Entity entity) {
 		switch(entity.getType()) {
 		case PLAYER:
-		{
-			Sprite sprite = new Sprite(marbleRegion);
-			EntityDefinition def = EntityDefinitions.get(entity.getType());
-			sprite.setSize(def.getWidth(), def.getHeight());
-			sprite.setOriginCenter();
-			SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, sprite, null);
-			renderables.add(renderable);
-		}
+			{
+				Sprite sprite = new Sprite(marbleRegion);
+				EntityDefinition def = EntityDefinitions.get(entity.getType());
+				sprite.setSize(def.getWidth(), def.getHeight());
+				sprite.setOriginCenter();
+				SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, sprite, null);
+				renderables.add(renderable);
+			}
 			break;
-		case ENEMY1:
+		case RANDOM_MOVE:
+			{
+				EntityDefinition def = EntityDefinitions.get(entity.getType());
+				Sprite underFogSprite = new Sprite(en1UFRegion);
+				underFogSprite.setSize(def.getWidth(), def.getHeight());
+				underFogSprite.setOriginCenter();
+				Sprite aboveFogSprite = new Sprite(en1AFRegion);
+				aboveFogSprite.setSize(def.getWidth(), def.getHeight());
+				aboveFogSprite.setOriginCenter();
+				SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, underFogSprite, aboveFogSprite);
+				renderables.add(renderable);
+			}
+			break;
+		case FOLLOW_SLOW:
+			{
+				EntityDefinition def = EntityDefinitions.get(entity.getType());
+				Sprite underFogSprite = new Sprite(en1UFRegion);
+				underFogSprite.setSize(def.getWidth(), def.getHeight());
+				underFogSprite.setOriginCenter();
+				Sprite aboveFogSprite = new Sprite(en1AFRegion);
+				aboveFogSprite.setSize(def.getWidth(), def.getHeight());
+				aboveFogSprite.setOriginCenter();
+				SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, underFogSprite, aboveFogSprite);
+				renderables.add(renderable);
+			}
+			break;
+		case FOLLOW_FAST:
+		{
 			EntityDefinition def = EntityDefinitions.get(entity.getType());
 			Sprite underFogSprite = new Sprite(en1UFRegion);
 			underFogSprite.setSize(def.getWidth(), def.getHeight());
@@ -85,7 +112,8 @@ public class RenderManager implements ISpectrumWorldListener{
 			aboveFogSprite.setOriginCenter();
 			SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, underFogSprite, aboveFogSprite);
 			renderables.add(renderable);
-			break;
+		}
+		break;
 		}
 	}
 	

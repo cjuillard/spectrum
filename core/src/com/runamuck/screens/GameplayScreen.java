@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.runamuck.rendering.RenderManager;
 import com.runamuck.simulation.Entity;
 import com.runamuck.simulation.SpectrumWorld;
@@ -49,6 +51,15 @@ public class GameplayScreen extends BaseScreen {
 		renderManager = new RenderManager(renderContext);
 		renderManager.loadWorld(spectrumWorld);
 		spectrumWorld.addListener(renderManager);
+		
+		Timer.schedule(new Task() {
+
+			@Override
+			public void run() {
+				spectrumWorld.createRandomEnemy();
+			}
+			
+		}, 2, 2);
 	}
 	
 	void clearLights() {

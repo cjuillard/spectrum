@@ -1,12 +1,10 @@
 package com.runamuck.simulation;
 
-import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-import com.runamuck.ai.EnemyFollowAIState;
 import com.runamuck.data.EntityDefinitions;
 import com.runamuck.simulation.actions.EntityAction;
 
@@ -20,7 +18,7 @@ public class Entity {
 	
 	protected Array<EntityAction> actions = new Array<EntityAction>();
 	protected StateMachine<Entity> aiStateMachine;
-	private float moveForce = 10;
+	private float moveForce = 500;
 	
 	public Entity(SpectrumWorld world, Body body, EntityType type) {
 		this.world = world;

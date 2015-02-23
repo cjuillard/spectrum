@@ -1,7 +1,9 @@
 package com.runamuck.data;
 
+import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.runamuck.simulation.Entity;
 
 
 public abstract class EntityDefinition {
@@ -32,7 +34,8 @@ public abstract class EntityDefinition {
 	}
 	
 	public abstract Body createBody(World world);
-
+	public abstract StateMachine<Entity> getAI(Entity source);
+	
 	public float getMaxHP() {
 		return maxHP;
 	}

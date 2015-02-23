@@ -1,9 +1,10 @@
 package com.runamuck.rendering;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.runamuck.data.EntityDefinition;
 import com.runamuck.data.EntityDefinitions;
@@ -15,18 +16,11 @@ public class RenderManager implements ISpectrumWorldListener{
 	
 	private RenderContext renderContext;
 	private Array<IRenderable> renderables = new Array<IRenderable>();
-	private TextureRegion marbleRegion;
-	private TextureRegion en1UFRegion;
-	private TextureRegion en1AFRegion;
+	private AssetManager assetManager;
 	
-	public RenderManager(RenderContext renderContext) {
+	public RenderManager(RenderContext renderContext, AssetManager assetManager) {
 		this.renderContext = renderContext;
-		
-		marbleRegion = new TextureRegion(new Texture(
-				Gdx.files.internal("data/marble.png")));
-		
-		en1UFRegion = new TextureRegion(new Texture(Gdx.files.internal("data/enemy1_bf.png")));
-		en1AFRegion = new TextureRegion(new Texture(Gdx.files.internal("data/enemy1_af.png")));
+		this.assetManager = assetManager;
 	}
 	
 	public void update(float timeElapsed) {
@@ -67,54 +61,49 @@ public class RenderManager implements ISpectrumWorldListener{
 		switch(entity.getType()) {
 		case PLAYER:
 			{
-				Sprite sprite = new Sprite(marbleRegion);
-				EntityDefinition def = EntityDefinitions.get(entity.getType());
-				sprite.setSize(def.getWidth(), def.getHeight());
-				sprite.setOriginCenter();
-				SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, sprite, null);
-				renderables.add(renderable);
+				renderables.add(createSpriteRenderable(entity, "data/marble.png", null));
 			}
 			break;
 		case RANDOM_MOVE:
 			{
-				EntityDefinition def = EntityDefinitions.get(entity.getType());
-				Sprite underFogSprite = new Sprite(en1UFRegion);
-				underFogSprite.setSize(def.getWidth(), def.getHeight());
-				underFogSprite.setOriginCenter();
-				Sprite aboveFogSprite = new Sprite(en1AFRegion);
-				aboveFogSprite.setSize(def.getWidth(), def.getHeight());
-				aboveFogSprite.setOriginCenter();
-				SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, underFogSprite, aboveFogSprite);
-				renderables.add(renderable);
+				renderables.add(createSpriteRenderable(entity, "data/enemy1_bf.png", "data/enemy1_af.png"));
 			}
 			break;
 		case FOLLOW_SLOW:
 			{
-				EntityDefinition def = EntityDefinitions.get(entity.getType());
-				Sprite underFogSprite = new Sprite(en1UFRegion);
-				underFogSprite.setSize(def.getWidth(), def.getHeight());
-				underFogSprite.setOriginCenter();
-				Sprite aboveFogSprite = new Sprite(en1AFRegion);
-				aboveFogSprite.setSize(def.getWidth(), def.getHeight());
-				aboveFogSprite.setOriginCenter();
-				SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, underFogSprite, aboveFogSprite);
-				renderables.add(renderable);
+				renderables.add(createSpriteRenderable(entity, "data/enemy2_bf.png", "data/enemy1_af.png"));
 			}
 			break;
 		case FOLLOW_FAST:
-		{
-			EntityDefinition def = EntityDefinitions.get(entity.getType());
-			Sprite underFogSprite = new Sprite(en1UFRegion);
-			underFogSprite.setSize(def.getWidth(), def.getHeight());
-			underFogSprite.setOriginCenter();
-			Sprite aboveFogSprite = new Sprite(en1AFRegion);
-			aboveFogSprite.setSize(def.getWidth(), def.getHeight());
-			aboveFogSprite.setOriginCenter();
-			SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, underFogSprite, aboveFogSprite);
-			renderables.add(renderable);
-		}
+			{		
+				renderables.add(createSpriteRenderable(entity, "data/enemy3_bf.png", "data/enemy1_af.png"));
+			}
 		break;
 		}
+	}
+	
+	private SpriteEntityRenderable createSpriteRenderable(Entity entity, String belowFog, String aboveFog) {
+		TextureParameter texParam = new TextureParameter();
+		texParam.magFilter = TextureFilter.Linear;
+		texParam.minFilter = TextureFilter.Linear;
+		
+		assetManager.load(belowFog, Texture.class, texParam);
+		if(aboveFog != null) assetManager.load(aboveFog, Texture.class, texParam);
+		assetManager.finishLoading();
+		
+		Sprite belowFogSprite = new Sprite(assetManager.get(belowFog, Texture.class));
+		Sprite aboveFogSprite = aboveFog != null ? new Sprite(assetManager.get(aboveFog, Texture.class)) : null;
+		
+		EntityDefinition def = EntityDefinitions.get(entity.getType());
+		belowFogSprite.setSize(def.getWidth(), def.getHeight());
+		belowFogSprite.setOriginCenter();
+		if(aboveFogSprite != null) {
+			aboveFogSprite.setSize(def.getWidth(), def.getHeight());
+			aboveFogSprite.setOriginCenter();
+		}
+		
+		SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, belowFogSprite, aboveFogSprite);
+		return renderable;
 	}
 	
 	@Override

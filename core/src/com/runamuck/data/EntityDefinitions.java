@@ -93,8 +93,8 @@ public abstract class EntityDefinitions {
 			}
 			
 		};
-		enemy1Def.setWidth(1)
-		.setHeight(1);
+		enemy1Def.setWidth(1.5f)
+		.setHeight(1.5f);
 		definitions.put(EntityType.RANDOM_MOVE, enemy1Def);
 		
 		EntityDefinition enemy2Def = new EntityDefinition() {
@@ -132,8 +132,8 @@ public abstract class EntityDefinitions {
 			}
 			
 		};
-		enemy2Def.setWidth(1)
-		.setHeight(1);
+		enemy2Def.setWidth(1.5f)
+		.setHeight(1.5f);
 		definitions.put(EntityType.FOLLOW_SLOW, enemy2Def);
 		
 		EntityDefinition enemy3Def = new EntityDefinition() {
@@ -171,8 +171,8 @@ public abstract class EntityDefinitions {
 			}
 			
 		};
-		enemy3Def.setWidth(1)
-		.setHeight(1)
+		enemy3Def.setWidth(1.5f)
+		.setHeight(1.5f)
 		.setMaxHP(50);
 		definitions.put(EntityType.FOLLOW_FAST, enemy3Def);
 	}

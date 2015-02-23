@@ -25,7 +25,7 @@ public class SpriteEntityRenderable implements IEntityRenderable {
 		float angle = MathUtils.radiansToDegrees * body.getAngle();
 		belowFog.setCenter(body.getPosition().x, body.getPosition().y);
 		belowFog.setRotation(angle);
-		
+//		belowFog.setAlpha((entity.getMaxHP() - entity.getHp()) / entity.getMaxHP());
 		if(aboveFog != null) {
 			aboveFog.setCenter(body.getPosition().x, body.getPosition().y);
 			aboveFog.setRotation(angle);

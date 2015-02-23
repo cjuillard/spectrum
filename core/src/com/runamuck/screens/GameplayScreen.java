@@ -48,7 +48,7 @@ public class GameplayScreen extends BaseScreen {
 
 //		initPointLights();
 		
-		renderManager = new RenderManager(renderContext);
+		renderManager = new RenderManager(renderContext, assetManager);
 		renderManager.loadWorld(spectrumWorld);
 		spectrumWorld.addListener(renderManager);
 		

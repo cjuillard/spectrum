@@ -15,9 +15,9 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   inkscape:export-filename="C:\Users\Colin\Documents\Development\Spectrum\android\assets\data\attacker_bf.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
+   inkscape:export-filename="C:\Users\Colin\Documents\Dev\spectrum\android\assets\data\enemy2_bf.png"
+   inkscape:export-xdpi="22.5"
+   inkscape:export-ydpi="22.5"
    sodipodi:docname="bf.svg">
   <defs
      id="defs4" />
@@ -29,8 +29,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="-31.552856"
-     inkscape:cy="117.28222"
+     inkscape:cx="-117.9209"
+     inkscape:cy="52.083938"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -57,18 +57,22 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-852.36216)">
-    <ellipse
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ff0000;stroke-width:20.26300049;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       id="path3336"
-       cx="100.76272"
-       cy="952.86218"
-       rx="94.795799"
-       ry="96.058487"
-       d="m 195.55852,952.86218 c 0,53.05162 -42.44153,96.05852 -94.7958,96.05852 -52.354276,0 -94.7958011,-43.0069 -94.7958011,-96.05852 0,-53.05163 42.4415251,-96.05848 94.7958011,-96.05848 52.35427,0 94.7958,43.00685 94.7958,96.05848 z"
-       sodipodi:cx="100.76272"
-       sodipodi:cy="952.86218"
-       sodipodi:rx="94.795799"
-       sodipodi:ry="96.058487"
-       transform="matrix(0.92103378,0,0,0.92103378,7.6562666,74.939723)" />
+    <path
+       sodipodi:type="star"
+       style="fill:none;stroke:#ffffff;stroke-width:11.99951911;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path2987"
+       sodipodi:sides="3"
+       sodipodi:cx="94.954338"
+       sodipodi:cy="80.802002"
+       sodipodi:r1="101.56555"
+       sodipodi:r2="50.782776"
+       sodipodi:arg1="1.5707963"
+       sodipodi:arg2="2.6179939"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 94.954341,182.36755 50.975164,106.19339 6.9959887,30.019228 l 87.9583503,-2e-6 87.958341,-2e-6 -43.97917,76.174166 z"
+       transform="matrix(0.97312233,0,0,0.97312233,9.077533,849.42504)"
+       inkscape:transform-center-y="24.708925" />
   </g>
 </svg>

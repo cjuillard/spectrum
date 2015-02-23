@@ -14,7 +14,7 @@
    viewBox="0 0 200 200"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="0.48.4 r9939"
    inkscape:export-filename="C:\Users\Colin\Documents\Development\Spectrum\android\assets\data\enemy1_af.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
@@ -30,14 +30,14 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
      inkscape:cx="-85.772591"
-     inkscape:cy="-2.2203673"
+     inkscape:cy="63.864458"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      units="px"
-     inkscape:window-width="1680"
-     inkscape:window-height="1028"
-     inkscape:window-x="1912"
+     inkscape:window-width="1600"
+     inkscape:window-height="838"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1" />
   <metadata
@@ -58,18 +58,28 @@
      id="layer1"
      transform="translate(0,-852.36216)">
     <ellipse
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ff0000;stroke-width:3.523;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ff0000;stroke-width:3.523;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="path3336"
        cx="72.225914"
        cy="920.78979"
        rx="5.3891387"
-       ry="5.1366005" />
+       ry="5.1366005"
+       sodipodi:cx="72.225914"
+       sodipodi:cy="920.78979"
+       sodipodi:rx="5.3891387"
+       sodipodi:ry="5.1366005"
+       transform="matrix(3.2249624,0,0,3.2249624,-164.60985,-2033.3747)" />
     <ellipse
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ff0000;stroke-width:3.523;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ff0000;stroke-width:3.523;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="path3336-8"
        cx="118.18785"
        cy="921.0423"
        rx="5.3891387"
-       ry="5.1366005" />
+       ry="5.1366005"
+       sodipodi:cx="118.18785"
+       sodipodi:cy="921.0423"
+       sodipodi:rx="5.3891387"
+       sodipodi:ry="5.1366005"
+       transform="matrix(3.1543287,0,0,3.1543287,-247.21065,-1969.3671)" />
   </g>
 </svg>

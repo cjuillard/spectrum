@@ -111,7 +111,7 @@ public class SpectrumWorld {
 
 							@Override
 							public void run() {
-								aEntity.setHp(0);
+//								aEntity.setHp(0);
 							}
 							
 						});
@@ -120,7 +120,7 @@ public class SpectrumWorld {
 
 							@Override
 							public void run() {
-								bEntity.setHp(0);
+//								bEntity.setHp(0);
 							}
 							
 						});
@@ -139,7 +139,7 @@ public class SpectrumWorld {
 		float startPos = def.getHeight() / 2f;
 		ChainLight light = new ChainLight(
 				rayHandler, RAYS_PER_BALL, null, LIGHT_DISTANCE*3, 1,
-				new float[]{-1, -startPos, 0, -startPos, 1, -startPos});
+				new float[]{-2, -startPos, 0, -startPos, 2, -startPos});
 		light.attachToBody(playerEntity.getBody());
 //		PointLight light = new PointLight(
 //				rayHandler, RAYS_PER_BALL, null, LIGHT_DISTANCE, 0f, 0f);

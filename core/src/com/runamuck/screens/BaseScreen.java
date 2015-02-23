@@ -2,6 +2,7 @@ package com.runamuck.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -18,6 +19,7 @@ public class BaseScreen {
 	protected Skin skin;
 	protected Batch batch;
 	protected RenderContext renderContext;
+	protected AssetManager assetManager;
 	
 	public BaseScreen() {
 		SpectrumGame game = (SpectrumGame)Gdx.app.getApplicationListener();
@@ -25,6 +27,7 @@ public class BaseScreen {
 		this.screenManager = game.getScreenManager();
 		this.batch = game.getBatch();
 		this.renderContext = game.getRenderContext();
+		this.assetManager = game.getAssetManager();
 		
 		uiRoot = new Stack();
 		uiRoot.setFillParent(true);

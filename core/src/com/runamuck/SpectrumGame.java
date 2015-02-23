@@ -2,6 +2,7 @@ package com.runamuck;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,9 +20,12 @@ public class SpectrumGame implements ApplicationListener {
 	private ScreenManager screenManager;
 	private SpriteBatch batch;
 	private RenderContext renderContext;
+	private AssetManager assetManager;
 	
 	@Override
 	public void create() {
+		assetManager = new AssetManager();
+		
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		
 		batch = new SpriteBatch();
@@ -78,5 +82,9 @@ public class SpectrumGame implements ApplicationListener {
 	
 	public RenderContext getRenderContext() {
 		return renderContext;
+	}
+
+	public AssetManager getAssetManager() {
+		return assetManager;
 	}
 }

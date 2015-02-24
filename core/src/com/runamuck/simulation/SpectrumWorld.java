@@ -1,6 +1,8 @@
 package com.runamuck.simulation;
 
+import box2dLight.AmbientLight;
 import box2dLight.ChainLight;
+import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 import com.badlogic.gdx.Gdx;
@@ -77,6 +79,23 @@ public class SpectrumWorld {
 		groundBody = box2DWorld.createBody(chainBodyDef);
 		groundBody.createFixture(chainShape, 0);
 		chainShape.dispose();
+		
+//		PointLight light = new PointLight(
+//				rayHandler, 4, null, width*2f, 0f, 0f);
+//		light.setColor(
+//				1f,
+//				1,
+//				1,
+//				1f);
+		
+//		ChainLight light = new ChainLight(
+//				rayHandler, RAYS_PER_BALL, null, LIGHT_DISTANCE*3, 1,
+//				new float[]{-width/2f, -height/2, -width/2f, height/2f});
+//		light.setColor(1f, 1, 1, 1f);
+		
+		AmbientLight light = new AmbientLight(
+				rayHandler, RAYS_PER_BALL, null, LIGHT_DISTANCE*3, 1);
+		light.setColor(1f, 1, 1, 1f);
 	}
 	
 	private ContactListener getContactListener() {

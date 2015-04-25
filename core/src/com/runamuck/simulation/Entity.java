@@ -1,7 +1,6 @@
 package com.runamuck.simulation;
 
 import com.badlogic.gdx.ai.fsm.StateMachine;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
@@ -12,7 +11,6 @@ public class Entity {
 	
 	protected Body body;
 	protected float hp;
-	protected Weapon weapon;
 	protected EntityType type;
 	protected SpectrumWorld world;
 	
@@ -70,33 +68,6 @@ public class Entity {
 				actions.removeIndex(0);
 			}
 		}
-		
-		if(weapon != null) {
-			Array<Entity> entities = world.getEntities();
-			for(int i = entities.size -1 ; i >= 0; i--) {
-				Entity otherEntity = entities.get(i);
-				
-				if(EntityDefinitions.isDamagedByLight(otherEntity.getType())) {
-					Vector2 pos = otherEntity.getBody().getPosition();
-					if(weapon.getLight().contains(pos.x, pos.y)) {
-						otherEntity.setHp(otherEntity.getHp() - delta * weapon.getDamage());
-					}
-				}
-			}
-//			weapon.getLight()
-		}
-	}
-
-	public Weapon getWeapon() {
-		return weapon;
-	}
-
-	public void setWeapon(Weapon light) {
-		if(this.weapon != null) {
-			this.weapon.getLight().remove();
-			this.weapon.getLight().dispose();
-		}
-		this.weapon = light;
 	}
 	
 	public EntityType getType() {
@@ -108,12 +79,6 @@ public class Entity {
 			body.getWorld().destroyBody(body);
 		}
 		body = null;
-		
-		if(weapon != null) {
-			weapon.getLight().remove();
-			weapon.getLight().dispose();
-		}
-		weapon = null;
 	}
 
 	public float getMoveForce() {

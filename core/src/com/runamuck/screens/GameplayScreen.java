@@ -6,6 +6,7 @@ import box2dLight.Light;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -34,7 +35,12 @@ public class GameplayScreen extends BaseScreen {
 	public void show() {
 		spectrumWorld = new SpectrumWorld();
 		
-		camera = new OrthographicCamera(spectrumWorld.getWidth(), spectrumWorld.getHeight());
+		float widthFactor = spectrumWorld.getWidth() / Gdx.graphics.getWidth();
+		float heightFactor = spectrumWorld.getHeight() / Gdx.graphics.getHeight();
+		if(widthFactor > heightFactor) 
+			camera = new OrthographicCamera(Gdx.graphics.getWidth() * heightFactor, spectrumWorld.getHeight());
+		else
+			camera = new OrthographicCamera(spectrumWorld.getWidth(), Gdx.graphics.getHeight() * widthFactor);
 		camera.update();
 		
 		RayHandler.setGammaCorrection(true);
@@ -60,6 +66,20 @@ public class GameplayScreen extends BaseScreen {
 			}
 			
 		}, 2, 2);
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		float widthFactor = spectrumWorld.getWidth() / Gdx.graphics.getWidth();
+		float heightFactor = spectrumWorld.getHeight() / Gdx.graphics.getHeight();
+		if(widthFactor > heightFactor)  {
+			camera.viewportWidth = Gdx.graphics.getWidth() * heightFactor;
+			camera.viewportHeight = spectrumWorld.getHeight();
+		} else {
+			camera.viewportWidth = spectrumWorld.getWidth();
+			camera.viewportHeight = Gdx.graphics.getHeight() * widthFactor;
+		}
+		super.resize(width, height);
 	}
 	
 	void clearLights() {

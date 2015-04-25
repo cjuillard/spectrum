@@ -1,6 +1,5 @@
 package com.runamuck.simulation;
 
-import box2dLight.ChainLight;
 import box2dLight.RayHandler;
 
 import com.badlogic.gdx.Gdx;
@@ -28,9 +27,9 @@ import com.runamuck.simulation.actions.ActionPool;
 
 public class SpectrumWorld {
 	private static final int PLAYER_FORCE = 4000;
-	static final int RAYS_PER_BALL = 128;
-	static final float LIGHT_DISTANCE = 20f;
-	static final float RADIUS = 1f;
+	public static final int RAYS_PER_BALL = 128;
+	public static final float LIGHT_DISTANCE = 20f;
+	public static final float RADIUS = 1f;
 	
 	// Physics simulation parameters
 	private final static int MAX_FPS = 30;
@@ -44,7 +43,7 @@ public class SpectrumWorld {
 	private World box2DWorld;
 	private Body groundBody;
 	
-	private Entity playerEntity;
+	private ShipEntity playerEntity;
 	private Array<Entity> entities = new Array<Entity>();
 	private float physicsTimeLeft;
 	
@@ -147,23 +146,11 @@ public class SpectrumWorld {
 	private void createPlayer(RayHandler rayHandler) {
 		// Create player
 		EntityDefinition def = EntityDefinitions.get(EntityType.PLAYER);
-		playerEntity = new Entity(this, def.createBody(box2DWorld), EntityType.PLAYER);
+		playerEntity = new ShipEntity(this, def.createBody(box2DWorld), EntityType.PLAYER);
 		playerEntity.addAction(ActionPool.createBusyAction(playerEntity));
 		
-		float startPos = def.getHeight() / 2f;
-		ChainLight light = new ChainLight(
-				rayHandler, RAYS_PER_BALL, null, LIGHT_DISTANCE*3, 1,
-				new float[]{-2, -startPos, 0, -startPos, 2, -startPos});
-		light.attachToBody(playerEntity.getBody());
-//		PointLight light = new PointLight(
-//				rayHandler, RAYS_PER_BALL, null, LIGHT_DISTANCE, 0f, 0f);
-//		light.attachToBody(playerEntity.getBody(), RADIUS / 2f, RADIUS / 2f);
-		light.setColor(
-				1f,
-				0,
-				0,
-				1f);
-		playerEntity.setWeapon(new Weapon(light, 100));
+//		playerEntity.setWeapon(new RayWeapon(this, rayHandler, def, playerEntity.getBody()));
+		playerEntity.setWeapon(new PulseWeapon(this, rayHandler, def, playerEntity.getBody()));
 		
 		addEntity(playerEntity);
 	}

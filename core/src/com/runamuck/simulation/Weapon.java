@@ -1,21 +1,24 @@
 package com.runamuck.simulation;
 
-import box2dLight.Light;
 
-public class Weapon {
-	private Light light;
-	private float damage;
+public abstract class Weapon {
 	
-	public Weapon(Light light, float damage) {
-		this.light = light;
-		this.damage = damage;
+	protected SpectrumWorld world;
+	protected float damage;
+	
+	public Weapon(SpectrumWorld world) {
+		this.world = world;
 	}
 	
-	public Light getLight() {
-		return light;
-	}
-	
+	abstract public void dispose();
+
+	abstract public void update(float delta);
+
 	public float getDamage() {
 		return damage;
+	}
+
+	public void setDamage(float damage) {
+		this.damage = damage;
 	}
 }

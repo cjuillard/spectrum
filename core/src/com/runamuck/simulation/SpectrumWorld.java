@@ -1,26 +1,23 @@
 package com.runamuck.simulation;
 
-import box2dLight.AmbientLight;
 import box2dLight.ChainLight;
-import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
-import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.runamuck.ai.EnemyFollowAIState;
@@ -93,9 +90,7 @@ public class SpectrumWorld {
 //				new float[]{-width/2f, -height/2, -width/2f, height/2f});
 //		light.setColor(1f, 1, 1, 1f);
 		
-		AmbientLight light = new AmbientLight(
-				rayHandler, RAYS_PER_BALL, null, LIGHT_DISTANCE*3, 1);
-		light.setColor(1f, 1, 1, 1f);
+		rayHandler.setAmbientLight(.05f, .05f, .05f, 0);
 	}
 	
 	private ContactListener getContactListener() {

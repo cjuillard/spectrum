@@ -11,12 +11,14 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.runamuck.rendering.DeformablePlane;
 import com.runamuck.rendering.RenderManager;
 import com.runamuck.rendering.SpriteRenderable;
 import com.runamuck.simulation.Entity;
@@ -36,6 +38,7 @@ public class GameplayScreen extends BaseScreen {
 	private RenderManager renderManager;
 	private SpectrumWorld spectrumWorld;
 	private Sprite background;
+	private DeformablePlane deformablePlane;
 	
 	@Override
 	public void show() {
@@ -75,6 +78,17 @@ public class GameplayScreen extends BaseScreen {
 //		background.setPosition(-background.getWidth() / 2f, -background.getHeight() / 2f);
 //		SpriteRenderable backgroundRenderable = new SpriteRenderable(background);
 //		renderManager.setBackground(backgroundRenderable);
+		
+		TextureParameter param = new TextureParameter();
+		param.minFilter = TextureFilter.Linear;
+		param.magFilter = TextureFilter.Linear;
+		param.wrapU = TextureWrap.Repeat;
+		param.wrapV = TextureWrap.Repeat;
+		assetManager.load("env/grid.png", Texture.class, param);
+		assetManager.finishLoading();
+		this.deformablePlane = new DeformablePlane(assetManager.get("env/grid.png", Texture.class), 
+											-spectrumWorld.getWidth() / 2f, -spectrumWorld.getHeight() / 2f, 
+											spectrumWorld.getWidth(), spectrumWorld.getHeight());
 		
 		Timer.schedule(new Task() {
 
@@ -130,6 +144,8 @@ public class GameplayScreen extends BaseScreen {
 	
 	@Override
 	public void render(float delta) {
+		renderContext.setCamera(camera);
+		
 		super.render(delta);
 		
 		int stepCount = spectrumWorld.update(camera, delta);
@@ -147,6 +163,8 @@ public class GameplayScreen extends BaseScreen {
 		sr.setProjectionMatrix(camera.combined);
 		batch.setProjectionMatrix(camera.combined);
 		
+		deformablePlane.render(renderContext);
+		
 		renderManager.renderBeforeFog();
 		
 		/** BOX2D LIGHT STUFF BEGIN */
@@ -157,6 +175,7 @@ public class GameplayScreen extends BaseScreen {
 		/** BOX2D LIGHT STUFF END */
 		
 		renderManager.renderAfterFog();
+		deformablePlane.renderAboveFog(renderContext);
 		
 		// Draw the out of bounds
 		sr.begin(ShapeType.Line);

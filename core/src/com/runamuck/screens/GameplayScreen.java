@@ -7,13 +7,18 @@ import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.runamuck.rendering.RenderManager;
+import com.runamuck.rendering.SpriteRenderable;
 import com.runamuck.simulation.Entity;
 import com.runamuck.simulation.SpectrumWorld;
 
@@ -30,6 +35,7 @@ public class GameplayScreen extends BaseScreen {
 	
 	private RenderManager renderManager;
 	private SpectrumWorld spectrumWorld;
+	private Sprite background;
 	
 	@Override
 	public void show() {
@@ -57,6 +63,18 @@ public class GameplayScreen extends BaseScreen {
 		renderManager = new RenderManager(renderContext, assetManager);
 		renderManager.loadWorld(spectrumWorld);
 		spectrumWorld.addListener(renderManager);
+		
+		// Create the background
+//		TextureParameter param = new TextureParameter();
+//		param.minFilter = TextureFilter.Linear;
+//		param.magFilter = TextureFilter.Linear;
+//		assetManager.load("data/space_background2.jpg", Texture.class, param);
+//		assetManager.finishLoading();
+//		Sprite background = new Sprite(assetManager.get("data/space_background2.jpg", Texture.class));
+//		background.setSize(spectrumWorld.getWidth() * 2f, spectrumWorld.getHeight() * 2f);
+//		background.setPosition(-background.getWidth() / 2f, -background.getHeight() / 2f);
+//		SpriteRenderable backgroundRenderable = new SpriteRenderable(background);
+//		renderManager.setBackground(backgroundRenderable);
 		
 		Timer.schedule(new Task() {
 

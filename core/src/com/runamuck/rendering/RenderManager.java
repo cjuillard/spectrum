@@ -15,6 +15,7 @@ import com.runamuck.simulation.SpectrumWorld;
 public class RenderManager implements ISpectrumWorldListener{
 	
 	private RenderContext renderContext;
+	private IRenderable background;
 	private Array<IRenderable> renderables = new Array<IRenderable>();
 	private AssetManager assetManager;
 	
@@ -31,6 +32,9 @@ public class RenderManager implements ISpectrumWorldListener{
 	
 	public void renderBeforeFog() {
 		renderContext.getBatch().begin();
+		if(background != null) background.render(renderContext);
+		
+		renderContext.getBatch().flush();
 		for(IRenderable renderable : renderables) {
 			renderable.render(renderContext);
 		}
@@ -121,5 +125,13 @@ public class RenderManager implements ISpectrumWorldListener{
 				}
 			}
 		}
+	}
+
+	public IRenderable getBackground() {
+		return background;
+	}
+
+	public void setBackground(IRenderable background) {
+		this.background = background;
 	}
 }

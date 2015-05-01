@@ -50,7 +50,8 @@ public class SpectrumGame implements ApplicationListener {
 	}
 
 	public void render () {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
+//		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
+		Gdx.gl.glClearColor(1f, 1f, 1f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		screenManager.render();

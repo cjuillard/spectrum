@@ -14,7 +14,7 @@ import com.runamuck.data.EntityDefinitions;
 
 public class PulseWeapon extends Weapon {
 	protected Array<PulseData> bullets = new Array<PulseData>();
-	private float pulseRadius = 2f;
+	private float pulseRadius = 4f;
 	private float pulseDelay = .15f;
 	private float pulseSpeed = 50f;
 	public static final int RAYS_PER_BALL = 128;
@@ -41,7 +41,7 @@ public class PulseWeapon extends Weapon {
 		this.rayHandler = rayHandler;
 		this.body = body;
 		
-		this.damage = 1000f;	// default damage
+		this.damage = 10000f;	// default damage
 	}
 
 	@Override
@@ -54,10 +54,10 @@ public class PulseWeapon extends Weapon {
 		
 		for(int i = bullets.size - 1; i >= 0; i--) {
 			PulseData data = bullets.get(i);
-			data.light.setPosition(data.light.getX() + data.vel.x * delta, data.light.getY() + data.vel.y * delta);
+			
 			
 			doDamage(data.light, delta);
-			
+			data.light.setPosition(data.light.getX() + data.vel.x * delta, data.light.getY() + data.vel.y * delta);
 			if(data.light.getX() < -world.getWidth() / 2f || data.light.getX() > world.getWidth() / 2f ||
 				data.light.getY() < -world.getHeight() / 2f || data.light.getY() > world.getHeight() / 2f) {
 				bullets.removeIndex(i);

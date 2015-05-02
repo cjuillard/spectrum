@@ -18,9 +18,14 @@ public class RenderManager implements ISpectrumWorldListener{
 	private Array<IRenderable> renderables = new Array<IRenderable>();
 	private AssetManager assetManager;
 	
+	private TextureParameter linearTexParm = new TextureParameter();
+	
 	public RenderManager(RenderContext renderContext, AssetManager assetManager) {
 		this.renderContext = renderContext;
 		this.assetManager = assetManager;
+		
+		linearTexParm.magFilter = TextureFilter.Linear;
+		linearTexParm.minFilter = TextureFilter.Linear;
 	}
 	
 	public void update(float timeElapsed) {
@@ -61,7 +66,8 @@ public class RenderManager implements ISpectrumWorldListener{
 		switch(entity.getType()) {
 		case PLAYER:
 			{
-				renderables.add(createSpriteRenderable(entity, "data/marble.png", null));
+				BlurredSpriteRenderable renderable = createBlurredSpriteRenderable(entity, null, "data/marble.png", "data/marble_blur.png", .2f);
+				renderables.add(renderable);
 			}
 			break;
 		case RANDOM_MOVE:
@@ -83,20 +89,18 @@ public class RenderManager implements ISpectrumWorldListener{
 	}
 	
 	private SpriteEntityRenderable createSpriteRenderable(Entity entity, String belowFog, String aboveFog) {
-		TextureParameter texParam = new TextureParameter();
-		texParam.magFilter = TextureFilter.Linear;
-		texParam.minFilter = TextureFilter.Linear;
-		
-		assetManager.load(belowFog, Texture.class, texParam);
-		if(aboveFog != null) assetManager.load(aboveFog, Texture.class, texParam);
+		loadTexture(belowFog);
+		loadTexture(aboveFog);
 		assetManager.finishLoading();
 		
-		Sprite belowFogSprite = new Sprite(assetManager.get(belowFog, Texture.class));
+		Sprite belowFogSprite = belowFog != null ? new Sprite(assetManager.get(belowFog, Texture.class)) : null;
 		Sprite aboveFogSprite = aboveFog != null ? new Sprite(assetManager.get(aboveFog, Texture.class)) : null;
 		
 		EntityDefinition def = EntityDefinitions.get(entity.getType());
-		belowFogSprite.setSize(def.getWidth(), def.getHeight());
-		belowFogSprite.setOriginCenter();
+		if(belowFogSprite != null) {
+			belowFogSprite.setSize(def.getWidth(), def.getHeight());
+			belowFogSprite.setOriginCenter();
+		}
 		if(aboveFogSprite != null) {
 			aboveFogSprite.setSize(def.getWidth(), def.getHeight());
 			aboveFogSprite.setOriginCenter();
@@ -104,6 +108,39 @@ public class RenderManager implements ISpectrumWorldListener{
 		
 		SpriteEntityRenderable renderable = new SpriteEntityRenderable(entity, belowFogSprite, aboveFogSprite);
 		return renderable;
+	}
+	
+	private BlurredSpriteRenderable createBlurredSpriteRenderable(Entity entity, String belowFog, String aboveFog, String aboveFogBlur, float alpha) {
+		loadTexture(belowFog);
+		loadTexture(aboveFog);
+		loadTexture(aboveFogBlur);
+		assetManager.finishLoading();
+		
+		EntityDefinition def = EntityDefinitions.get(entity.getType());
+		
+		Sprite belowFogSprite = loadSprite(belowFog, def, alpha);
+		Sprite aboveFogSprite = loadSprite(aboveFog, def, alpha);
+		Sprite aboveFogBlurSprite = loadSprite(aboveFogBlur, def, alpha);
+		
+		BlurredSpriteRenderable renderable = new BlurredSpriteRenderable(entity, belowFogSprite, aboveFogSprite, aboveFogBlurSprite);
+		return renderable;
+	}
+	
+	private Sprite loadSprite(String path, EntityDefinition def, float alpha) {
+		if(path == null) return null;
+		
+		Sprite sprite = new Sprite(assetManager.get(path, Texture.class));
+		sprite.setSize(def.getWidth(), def.getHeight());
+		sprite.setOriginCenter();
+		sprite.setAlpha(alpha);
+		
+		return sprite;
+	}
+	
+	private void loadTexture(String path) {
+		if(path != null) {
+			assetManager.load(path, Texture.class, linearTexParm);
+		}
 	}
 	
 	@Override

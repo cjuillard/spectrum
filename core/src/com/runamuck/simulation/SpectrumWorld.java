@@ -1,11 +1,14 @@
 package com.runamuck.simulation;
 
+import box2dLight.Light;
+import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -151,6 +154,9 @@ public class SpectrumWorld {
 		
 //		playerEntity.setWeapon(new RayWeapon(this, rayHandler, def, playerEntity.getBody()));
 		playerEntity.setWeapon(new PulseWeapon(this, rayHandler, def, playerEntity.getBody()));
+		
+		Light light = new PointLight(rayHandler, RAYS_PER_BALL, new Color(1,1,1,.1f), 5, 0, 0);
+		light.attachToBody(playerEntity.getBody());
 		
 		addEntity(playerEntity);
 	}

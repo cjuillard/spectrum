@@ -9,8 +9,8 @@ import com.sun.istack.internal.Nullable;
 public class SpriteEntityRenderable implements IEntityRenderable {
 
 	protected Sprite belowFog;
-	private Entity entity;
-	private Sprite aboveFog;
+	protected Entity entity;
+	protected Sprite aboveFog;
 	
 	public SpriteEntityRenderable(Entity entity, Sprite belowFog, @Nullable Sprite aboveFog) {
 		this.entity = entity;
@@ -23,8 +23,10 @@ public class SpriteEntityRenderable implements IEntityRenderable {
 		
 		Body body = entity.getBody();
 		float angle = MathUtils.radiansToDegrees * body.getAngle();
-		belowFog.setCenter(body.getPosition().x, body.getPosition().y);
-		belowFog.setRotation(angle);
+		if(belowFog != null) {
+			belowFog.setCenter(body.getPosition().x, body.getPosition().y);
+			belowFog.setRotation(angle);
+		}
 //		belowFog.setAlpha((entity.getMaxHP() - entity.getHp()) / entity.getMaxHP());
 		if(aboveFog != null) {
 			aboveFog.setCenter(body.getPosition().x, body.getPosition().y);
@@ -34,7 +36,9 @@ public class SpriteEntityRenderable implements IEntityRenderable {
 
 	@Override
 	public void render(RenderContext renderContext) {
-		belowFog.draw(renderContext.getBatch());
+		if(belowFog != null) {
+			belowFog.draw(renderContext.getBatch());
+		}
 	}
 	
 	@Override
@@ -47,6 +51,22 @@ public class SpriteEntityRenderable implements IEntityRenderable {
 	@Override
 	public Entity getEntity() {
 		return entity;
+	}
+
+	public Sprite getBelowFog() {
+		return belowFog;
+	}
+
+	public void setBelowFog(Sprite belowFog) {
+		this.belowFog = belowFog;
+	}
+
+	public Sprite getAboveFog() {
+		return aboveFog;
+	}
+
+	public void setAboveFog(Sprite aboveFog) {
+		this.aboveFog = aboveFog;
 	}
 	
 	

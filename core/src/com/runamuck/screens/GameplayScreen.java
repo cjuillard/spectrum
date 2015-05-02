@@ -163,6 +163,7 @@ public class GameplayScreen extends BaseScreen {
 		sr.setProjectionMatrix(camera.combined);
 		batch.setProjectionMatrix(camera.combined);
 		
+		deformablePlane.update(delta);
 		deformablePlane.render(renderContext);
 		
 		renderManager.renderBeforeFog();

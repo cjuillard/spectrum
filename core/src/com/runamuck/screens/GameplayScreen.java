@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.runamuck.rendering.DeformablePlane;
@@ -163,6 +164,12 @@ public class GameplayScreen extends BaseScreen {
 		sr.setProjectionMatrix(camera.combined);
 		batch.setProjectionMatrix(camera.combined);
 		
+		Body playerBody = playerEntity != null ? playerEntity.getBody() : null;
+		if(playerBody != null) {
+			float vel = playerBody.getLinearVelocity().len();
+			deformablePlane.applyForce(playerBody.getPosition().x, playerBody.getPosition().y, vel * delta);
+	
+		}
 		deformablePlane.update(delta);
 		deformablePlane.render(renderContext);
 		

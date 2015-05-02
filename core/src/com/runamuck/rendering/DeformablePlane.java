@@ -10,8 +10,10 @@ import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.NumberUtils;
 
 public class DeformablePlane implements IRenderable {
@@ -23,8 +25,10 @@ public class DeformablePlane implements IRenderable {
 	private float[] verts;
 	
 	private int numQuads;
-	private int meshRows;	// quad rows
-	private int meshCols;	// quad columns
+	private int quadRows;	// quad rows
+	private int quadCols;	// quad columns
+	private int vertRows;
+	private int vertCols;
 	private int numVerts;
 
 	private Rectangle bounds;
@@ -35,9 +39,9 @@ public class DeformablePlane implements IRenderable {
 		VertexInfo[][] verts;
 		
 		public MeshInfo() {
-			verts = new VertexInfo[meshRows][meshCols];
-			for(int row = 0; row < meshRows; row++) {
-				for(int col = 0; col < meshCols; col++) {
+			verts = new VertexInfo[vertRows][vertCols];
+			for(int row = 0; row < vertRows; row++) {
+				for(int col = 0; col < vertCols; col++) {
 					verts[row][col] = new VertexInfo(row, col);
 				}
 			}
@@ -47,6 +51,7 @@ public class DeformablePlane implements IRenderable {
 	private class VertexInfo {
 		private int row;
 		private int col;
+		public Vector2 vel = new Vector2();
 		public final float originalX;
 		public final float originalY;
 		public final Color originalC;
@@ -71,43 +76,51 @@ public class DeformablePlane implements IRenderable {
 		}
 		
 		public void setX(float x) {
-			verts[(row * (meshCols+1) + col + X_OFF) * VERTEX_SIZE] = x;
+			verts[(row * (quadCols+1) + col) * VERTEX_SIZE + X_OFF] = x;
 		}
 		
 		public float getX() {
-			return verts[(row * (meshCols+1) + col + X_OFF) * VERTEX_SIZE];
+			return verts[(row * (quadCols+1) + col) * VERTEX_SIZE + X_OFF];
 		}
 		
 		public void setY(float y) {
-			verts[(row * (meshCols+1) + col + Y_OFF) * VERTEX_SIZE] = y;
+			verts[(row * (quadCols+1) + col) * VERTEX_SIZE + Y_OFF] = y;
 		}
 		
 		public float getY() {
-			return verts[(row * (meshCols+1) + col + Y_OFF) * VERTEX_SIZE];
+			return verts[(row * (quadCols+1) + col) * VERTEX_SIZE + Y_OFF];
 		}
 		
 		public void setColor(float colorBits) {
-			verts[(row * (meshCols+1) + col + C_OFF) * VERTEX_SIZE] = colorBits;
+			verts[(row * (quadCols+1) + col) * VERTEX_SIZE + C_OFF] = colorBits;
 		}
 		
 		public float getColor() {
-			return verts[(row * (meshCols+1) + col + C_OFF) * VERTEX_SIZE];
+			return verts[(row * (quadCols+1) + col) * VERTEX_SIZE + C_OFF];
 		}
 		
 		public void setU(float u) {
-			verts[(row * (meshCols+1) + col + U_OFF) * VERTEX_SIZE] = u;
+			verts[(row * (quadCols+1) + col) * VERTEX_SIZE + U_OFF] = u;
 		}
 		
 		public float getU() {
-			return verts[(row * (meshCols+1) + col + U_OFF) * VERTEX_SIZE];
+			return verts[(row * (quadCols+1) + col) * VERTEX_SIZE + U_OFF];
 		}
 		
 		public void setV(float v) {
-			verts[(row * (meshCols+1) + col + V_OFF) * VERTEX_SIZE] = v;
+			verts[(row * (quadCols+1) + col) * VERTEX_SIZE + V_OFF] = v;
 		}
 		
 		public float getV() {
-			return verts[(row * (meshCols+1) + col + V_OFF) * VERTEX_SIZE];
+			return verts[(row * (quadCols+1) + col) * VERTEX_SIZE + V_OFF];
+		}
+
+		public void update(float elapsed) {
+			setX(getX() + vel.x * elapsed);
+			setY(getY() + vel.y * elapsed);
+			
+			float currSpeed = vel.len();
+			vel.nor().scl(currSpeed - (.95f * elapsed * currSpeed));
 		}
 	}
 	
@@ -116,35 +129,36 @@ public class DeformablePlane implements IRenderable {
 		
 		this.bounds = new Rectangle(x, y, width, height);
 		
-		this.meshCols = 50;
-		this.meshRows = 50;
-		this.numQuads = meshCols * meshRows;
-		this.numVerts = (meshCols+1) * (meshRows+1);
+		this.quadCols = 50;
+		this.quadRows = 50;
+		this.vertCols = quadCols + 1;
+		this.vertRows = quadRows + 1;
+		this.numQuads = quadCols * quadRows;
+		this.numVerts = vertCols * vertRows;
 		
 		mesh = new Mesh(VertexDataType.VertexArray, false, numVerts, numQuads * 6, new VertexAttribute(Usage.Position, 2,
 				ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 				new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		
-		float repeatXDist = width / meshCols;
-		float repeatYDist = height / meshRows;
+		float repeatXDist = width / quadCols;
+		float repeatYDist = height / quadRows;
 		
 		this.verts = new float[numVerts * VERTEX_SIZE];
 		int indx = 0;
-		for(int row = 0; row < meshRows+1; row++) {
-			for(int col = 0; col < meshCols+1; col++) {
-				verts[indx++] = x + col * (width / (meshCols));
-				verts[indx++] = y + row * (height / (meshRows));
+		for(int row = 0; row < quadRows+1; row++) {
+			for(int col = 0; col < quadCols+1; col++) {
+				verts[indx++] = x + col * (width / (quadCols));
+				verts[indx++] = y + row * (height / (quadRows));
 				
 //				verts[indx++] = new Color(row / (float)meshRows, 0, 0, .2f).toFloatBits();
 				verts[indx++] = new Color(1, 1, 1, .2f).toFloatBits();
 				
 //				verts[indx++] = (float)col / meshCols;
 //				verts[indx++] = (float)row / meshRows;
-				verts[indx++] = (x + col * (width / (meshCols))) / repeatXDist;
-				verts[indx++] = (y + row * (height / (meshRows))) / repeatYDist;
+				verts[indx++] = (x + col * (width / (quadCols))) / repeatXDist;
+				verts[indx++] = (y + row * (height / (quadRows))) / repeatYDist;
 				
-				float val = (x + col * (width / (meshCols))) / repeatXDist;
-				System.out.println(val);
+				float val = (x + col * (width / (quadCols))) / repeatXDist;
 			}
 		}
 		mesh.setVertices(verts);
@@ -152,15 +166,15 @@ public class DeformablePlane implements IRenderable {
 		int len = numQuads * 6;
 		short[] indices = new short[len];
 		indx = 0;
-		for(int row = 0; row < meshRows; row++) {
-			for(int col = 0; col < meshCols; col++) {
-				indices[indx++] = (short)(row * (meshCols+1) + col);
-				indices[indx++] = (short)(row * (meshCols+1) + 1 + col);
-				indices[indx++] = (short)((row+1) * (meshCols+1) + col);
+		for(int row = 0; row < quadRows; row++) {
+			for(int col = 0; col < quadCols; col++) {
+				indices[indx++] = (short)(row * (quadCols+1) + col);
+				indices[indx++] = (short)(row * (quadCols+1) + 1 + col);
+				indices[indx++] = (short)((row+1) * (quadCols+1) + col);
 				
-				indices[indx++] = (short)(row * (meshCols+1) + 1 + col);
-				indices[indx++] = (short)((row+1) * (meshCols+1) + 1 + col);
-				indices[indx++] = (short)((row+1) * (meshCols+1) + col);
+				indices[indx++] = (short)(row * (quadCols+1) + 1 + col);
+				indices[indx++] = (short)((row+1) * (quadCols+1) + 1 + col);
+				indices[indx++] = (short)((row+1) * (quadCols+1) + col);
 			}
 		}
 
@@ -169,6 +183,7 @@ public class DeformablePlane implements IRenderable {
 		this.meshInfo = new MeshInfo();
 	}
 	
+	private Vector2 tmpVec2 = new Vector2();
 	private float totalTimeElapsed;
 	@Override
 	public void update(float elapsed) {
@@ -178,6 +193,49 @@ public class DeformablePlane implements IRenderable {
 //
 //		info.setU(info.originalU + MathUtils.sinDeg(totalTimeElapsed * 90));
 //		mesh.setVertices(verts);
+		
+		// Elasticity
+		final float elasticity = 10f;
+//		VertexInfo info = meshInfo.verts[0][0];
+////		info.setX(info.getX() + 1f);
+////		info.setY(info.getY() + 1f);
+//		tmpVec2.set(info.originalX, info.originalY).sub(info.getX(), info.getY());
+//		
+//		final float dampeningLen2 = 250f;
+//		float distAway = tmpVec2.len2();
+//		float dampeningMult = Math.min(dampeningLen2, distAway) / dampeningLen2;
+//		
+//		tmpVec2.nor().scl(elasticity * dampeningMult);
+//		info.vel.add(tmpVec2);
+//		
+//		info.update(elapsed);
+		
+		for(int row = 0; row < vertRows; row++) {
+			for(int col = 0; col < vertCols; col++) {
+				VertexInfo info = meshInfo.verts[row][col];
+//				info.vel.x = .1f;
+				tmpVec2.set(info.originalX, info.originalY).sub(info.getX(), info.getY());
+				tmpVec2.nor().scl(elasticity * elapsed);
+				info.vel.add(tmpVec2);
+				
+				info.update(elapsed);
+			}
+		}
+	}
+	
+	public void applyForce(float x, float y, float strength) {
+		final float dampeningLen = bounds.width / 5f;
+		for(int row = 0; row < vertRows; row++) {
+			for(int col = 0; col < vertCols; col++) {
+				VertexInfo info = meshInfo.verts[row][col];
+				tmpVec2.set(info.getX(), info.getY()).sub(x, y);
+				float len = tmpVec2.len();
+				
+				float dampeningMult = MathUtils.clamp((dampeningLen - len) / dampeningLen, 0, 1);
+				tmpVec2.nor().scl(dampeningMult * strength);
+				info.vel.add(tmpVec2);
+			}
+		}
 	}
 
 	@Override

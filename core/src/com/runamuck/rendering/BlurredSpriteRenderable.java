@@ -10,8 +10,8 @@ public class BlurredSpriteRenderable extends SpriteEntityRenderable {
 	
 	private Array<Sprite> blurredSprites = new Array<Sprite>();
 	
-	private float blurMoveDelay = .4f;
-	private int numBlurImages = 2;
+	private float blurMoveDelay = .025f;
+	private int numBlurImages = 10;
 	private float fadeLength = blurMoveDelay * numBlurImages;
 	private float startAlpha;
 	
@@ -45,11 +45,11 @@ public class BlurredSpriteRenderable extends SpriteEntityRenderable {
 		
 		for(int i = 0; i < blurredSprites.size; i++) {
 			Sprite sprite = blurredSprites.get(i);
-			sprite.setAlpha(Math.max(0, sprite.getColor().a - (elapsed / fadeLength) * startAlpha));
 			
-			//System.out.print(sprite.getColor().a + " ");
+			float baseAlpha = (blurredSprites.size - i) / (float)blurredSprites.size * startAlpha;
+			float value = (lastDelay / blurMoveDelay) * (startAlpha / blurredSprites.size);
+			sprite.setAlpha(baseAlpha + value);
 		}
-		//System.out.println();
 	}
 	
 	@Override

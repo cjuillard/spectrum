@@ -19,6 +19,8 @@ import com.badlogic.gdx.utils.NumberUtils;
 public class DeformablePlane implements IRenderable {
 
 	static final int VERTEX_SIZE = 2 + 1 + 2;
+
+	private static final float ELASTICITY = 10;
 	
 	private Mesh mesh;
 	private Texture texture;
@@ -188,34 +190,13 @@ public class DeformablePlane implements IRenderable {
 	@Override
 	public void update(float elapsed) {
 		totalTimeElapsed += elapsed;
-//		VertexInfo info = meshInfo.verts[0][10];
-////		info.setX(info.originalX + MathUtils.sinDeg(totalTimeElapsed * 90) * bounds.width / 10f);
-//
-//		info.setU(info.originalU + MathUtils.sinDeg(totalTimeElapsed * 90));
-//		mesh.setVertices(verts);
 		
-		// Elasticity
-		final float elasticity = 10f;
-//		VertexInfo info = meshInfo.verts[0][0];
-////		info.setX(info.getX() + 1f);
-////		info.setY(info.getY() + 1f);
-//		tmpVec2.set(info.originalX, info.originalY).sub(info.getX(), info.getY());
-//		
-//		final float dampeningLen2 = 250f;
-//		float distAway = tmpVec2.len2();
-//		float dampeningMult = Math.min(dampeningLen2, distAway) / dampeningLen2;
-//		
-//		tmpVec2.nor().scl(elasticity * dampeningMult);
-//		info.vel.add(tmpVec2);
-//		
-//		info.update(elapsed);
-		
+		// Apply elasticity and update the mesh
 		for(int row = 0; row < vertRows; row++) {
 			for(int col = 0; col < vertCols; col++) {
 				VertexInfo info = meshInfo.verts[row][col];
-//				info.vel.x = .1f;
 				tmpVec2.set(info.originalX, info.originalY).sub(info.getX(), info.getY());
-				tmpVec2.nor().scl(elasticity * elapsed);
+				tmpVec2.nor().scl(ELASTICITY * elapsed);
 				info.vel.add(tmpVec2);
 				
 				info.update(elapsed);
